@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R-EALIZE | 留学生向け 特定技能1号 試験対策システム</title>
+  <meta name="description" content="R-EALIZE は、留学生のための特定技能1号の試験対策システムです。介護・ビルクリーニング・宿泊・工業製品製造業の4分野。1分野 ¥5,000（税込）、買い切り・期限なし。">
+  <meta name="theme-color" content="#0D0D0D">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/lp.css?v=20261119a">
+</head>
+<body id="top">
+
+  <!-- カットイン（体験デモで正解・不正解のとき） -->
+  <div id="cutin" class="cutin" hidden aria-hidden="true">
+    <div id="cutin-banner" class="cutin-banner">
+      <div class="halftone"></div>
+      <span id="cutin-sub" class="cutin-sub en">CORRECT!</span>
+      <p id="cutin-main" class="cutin-main en">NICE!</p>
+      <p id="cutin-desc" class="cutin-desc"></p>
+    </div>
+  </div>
+
+  <!-- 申込（受付の準備中） -->
+  <div id="apply-modal" class="modal" hidden>
+    <div class="modal-card light box" role="dialog" aria-modal="true" aria-labelledby="apply-title">
+      <div class="modal-ribbon en">APPLY // <ruby>申込<rt>もうしこみ</rt></ruby></div>
+      <button type="button" id="apply-close" class="modal-close" aria-label="閉じる">✕</button>
+      <h3 id="apply-title" class="modal-title"><ruby>受付<rt>うけつけ</rt></ruby>の<ruby>準備中<rt>じゅんびちゅう</rt></ruby>です</h3>
+      <p class="modal-text">
+        R-EALIZE は、いま<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みの<ruby>受付<rt>うけつけ</rt></ruby>を<ruby>準備<rt>じゅんび</rt></ruby>しています。<ruby>受付<rt>うけつけ</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>めるまで、もう<ruby>少<rt>すこ</rt></ruby>しお<ruby>待<rt>ま</rt></ruby>ちください。
+      </p>
+      <div class="modal-plan dark">
+        <div class="modal-plan-label">SELECTED // <ruby>選<rt>えら</rt></ruby>んだプラン</div>
+        <div id="apply-plan" class="modal-plan-name"></div>
+        <div id="apply-price" class="modal-plan-price en"></div>
+        <div class="modal-plan-note"><ruby>買<rt>か</rt></ruby>い<ruby>切<rt>き</rt></ruby>り・<ruby>期限<rt>きげん</rt></ruby>なし・<ruby>銀行<rt>ぎんこう</rt></ruby><ruby>振込<rt>ふりこみ</rt></ruby></div>
+      </div>
+      <div class="modal-actions">
+        <a class="btn btn-red btn-clip" href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">
+          <i class="fa-solid fa-envelope" aria-hidden="true"></i><span>お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせ</span>
+        </a>
+        <button type="button" id="apply-back" class="btn btn-gray"><ruby>戻<rt>もど</rt></ruby>る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ヘッダー -->
+  <header class="hd">
+    <div class="hd-in container">
+      <a href="#top" class="logo" aria-label="R-EALIZE トップへ">
+        <span class="logo-mark en">SSW1</span>
+        <span class="logo-text">
+          <span class="logo-name en">R-EALIZE</span>
+          <span class="logo-sub"><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby> <ruby>試験対策<rt>しけんたいさく</rt></ruby></span>
+        </span>
+      </a>
+
+      <nav class="hd-nav" aria-label="メインメニュー">
+        <a href="#features"><ruby>特長<rt>とくちょう</rt></ruby></a>
+        <a href="#demo"><ruby>体験<rt>たいけん</rt></ruby>デモ</a>
+        <a href="#fields">4<ruby>分野<rt>ぶんや</rt></ruby></a>
+        <a href="#stage">STAGE<ruby>制<rt>せい</rt></ruby></a>
+        <a href="#flow">ご<ruby>利用<rt>りよう</rt></ruby>の<ruby>流<rt>なが</rt></ruby>れ</a>
+        <a href="#pricing"><ruby>料金<rt>りょうきん</rt></ruby></a>
+        <a href="#faq">Q&amp;A</a>
+      </nav>
+
+      <div class="hd-actions">
+        <div class="furi">
+          <span class="furi-label">ふりがな</span>
+          <button type="button" id="furigana-toggle" class="furi-btn en" aria-pressed="true" aria-label="ふりがなの表示">ON</button>
+        </div>
+        <a href="#pricing" class="btn btn-red btn-clip hd-apply"><span><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</span></a>
+        <button type="button" id="menu-btn" class="menu-btn" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobile-nav">
+          <i id="menu-icon" class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-nav" class="m-nav" aria-label="スマホ用メニュー" hidden>
+      <div class="m-nav-grid">
+        <a href="#features"><ruby>特長<rt>とくちょう</rt></ruby></a>
+        <a href="#demo"><ruby>体験<rt>たいけん</rt></ruby>デモ</a>
+        <a href="#fields">4<ruby>分野<rt>ぶんや</rt></ruby></a>
+        <a href="#stage">STAGE<ruby>制<rt>せい</rt></ruby></a>
+        <a href="#flow">ご<ruby>利用<rt>りよう</rt></ruby>の<ruby>流<rt>なが</rt></ruby>れ</a>
+        <a href="#pricing"><ruby>料金<rt>りょうきん</rt></ruby>プラン</a>
+        <a href="#faq" class="span2">よくある<ruby>質問<rt>しつもん</rt></ruby>（Q&amp;A）</a>
+        <a href="#pricing" class="span2 m-nav-apply"><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- 1. ヒーロー -->
+    <section class="hero">
+      <div class="hero-star hero-star-1" aria-hidden="true">★</div>
+      <div class="hero-star hero-star-2" aria-hidden="true">★</div>
+
+      <div class="hero-in container">
+        <div class="hero-copy reveal">
+          <div class="skew-tag">
+            4<ruby>分野<rt>ぶんや</rt></ruby>・1<ruby>分野<rt>ぶんや</rt></ruby> ¥5,000（<ruby>税込<rt>ぜいこみ</rt></ruby>）・<ruby>期限<rt>きげん</rt></ruby>なし
+          </div>
+
+          <h1 class="hero-title stroke">
+            <ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>して、<br>
+            <ruby>日本<rt>にほん</rt></ruby>での<ruby>就職<rt>しゅうしょく</rt></ruby>をつかもう！
+            <span class="hero-name en stroke-red">R-EALIZE</span>
+          </h1>
+
+          <p class="hero-lead">
+            <ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>・<ruby>現場<rt>げんば</rt></ruby>の<ruby>単語<rt>たんご</rt></ruby>カード・<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby>がそろった、<ruby>留学生<rt>りゅうがくせい</rt></ruby>のための<ruby>試験対策<rt>しけんたいさく</rt></ruby>システム。<br>
+            <ruby>働<rt>はたら</rt></ruby>きたい<ruby>業界<rt>ぎょうかい</rt></ruby>の<ruby>技能評価試験<rt>ぎのうひょうかしけん</rt></ruby>に、<ruby>一<rt>いち</rt></ruby><ruby>回<rt>かい</rt></ruby>で<ruby>合格<rt>ごうかく</rt></ruby>しよう！
+          </p>
+
+          <div class="hero-btns">
+            <a href="#demo" class="btn btn-red btn-clip btn-lg">
+              <i class="fa-solid fa-play" aria-hidden="true"></i><span><ruby>体験<rt>たいけん</rt></ruby>してみる（<ruby>無料<rt>むりょう</rt></ruby>デモ）</span>
+            </a>
+            <a href="#features" class="btn btn-white btn-clip btn-lg">
+              <i class="fa-solid fa-layer-group" aria-hidden="true"></i><span><ruby>機能<rt>きのう</rt></ruby>を<ruby>見<rt>み</rt></ruby>る</span>
+            </a>
+          </div>
+
+          <ul class="hero-checks">
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><ruby>買<rt>か</rt></ruby>い<ruby>切<rt>き</rt></ruby>り・<ruby>期限<rt>きげん</rt></ruby>なし</span></li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span><ruby>銀行<rt>ぎんこう</rt></ruby><ruby>振込<rt>ふりこみ</rt></ruby>でお<ruby>支払<rt>しはら</rt></ruby>い</span></li>
+            <li><i class="fa-solid fa-circle-check" aria-hidden="true"></i><span>スマホ・PC<ruby>対応<rt>たいおう</rt></ruby></span></li>
+          </ul>
+        </div>
+
+        <!-- スマホ画面の見本（あとで直す予定） -->
+        <div class="hero-phone-wrap reveal" style="transition-delay:200ms">
+          <div class="phone box">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ph-bar">
+                <span class="en"><span class="ph-s">R</span> R-EALIZE</span>
+                <span class="ph-chip">ホーム</span>
+              </div>
+              <div class="ph-body">
+                <div class="ph-hello">
+                  <div>
+                    <span class="ph-small">こんにちは！</span>
+                    <p class="ph-name">Nguyenさん</p>
+                    <p class="ph-msg"><ruby>今日<rt>きょう</rt></ruby>も<ruby>少<rt>すこ</rt></ruby>しずつ、がんばろう！</p>
+                  </div>
+                  <span class="ph-field"><ruby>介護<rt>かいご</rt></ruby></span>
+                </div>
+                <div class="ph-menu">
+                  <div class="light"><i class="fa-solid fa-pen" aria-hidden="true"></i><ruby>問題<rt>もんだい</rt></ruby>を<ruby>解<rt>と</rt></ruby>く</div>
+                  <div class="light"><i class="fa-solid fa-clone" aria-hidden="true"></i><ruby>単語<rt>たんご</rt></ruby>カード</div>
+                  <div class="light is-yellow"><i class="fa-solid fa-file-signature" aria-hidden="true"></i><ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby></div>
+                </div>
+                <div class="ph-continue">
+                  <span><ruby>続<rt>つづ</rt></ruby>きから：まちがい<ruby>復習<rt>ふくしゅう</rt></ruby> 12<ruby>問<rt>もん</rt></ruby></span><span aria-hidden="true">›</span>
+                </div>
+                <div class="ph-card">
+                  <div class="ph-row">
+                    <p class="ph-streak"><b class="en">15</b><ruby>日<rt>にち</rt></ruby><ruby>連続<rt>れんぞく</rt></ruby><ruby>学習<rt>がくしゅう</rt></ruby>！</p>
+                    <span class="ph-pill">STREAK</span>
+                  </div>
+                  <ol class="ph-week">
+                    <li><ruby>木<rt>もく</rt></ruby></li><li><ruby>金<rt>きん</rt></ruby></li><li><ruby>土<rt>ど</rt></ruby></li><li><ruby>日<rt>にち</rt></ruby></li><li><ruby>月<rt>げつ</rt></ruby></li><li><ruby>火<rt>か</rt></ruby></li><li class="is-today"><ruby>今日<rt>きょう</rt></ruby></li>
+                  </ol>
+                </div>
+                <div class="ph-card">
+                  <div class="ph-row">
+                    <span class="ph-label"><ruby>総合<rt>そうごう</rt></ruby><ruby>正答率<rt>せいとうりつ</rt></ruby></span>
+                    <span class="ph-rate en">78<small>%</small></span>
+                  </div>
+                  <div class="ph-meter"><div style="width:78%"></div></div>
+                  <div class="ph-2col">
+                    <div class="is-y"><span><ruby>覚<rt>おぼ</rt></ruby>えた<ruby>単語<rt>たんご</rt></ruby></span><b>480 / 600<ruby>語<rt>ご</rt></ruby></b></div>
+                    <div class="is-r"><span><ruby>最後<rt>さいご</rt></ruby>の<ruby>模試<rt>もし</rt></ruby></span><b class="t-yellow"><ruby>合格圏<rt>ごうかくけん</rt></ruby> 82<ruby>点<rt>てん</rt></ruby></b></div>
+                  </div>
+                </div>
+              </div>
+              <div class="ph-tabs">
+                <span class="is-on"><i class="fa-solid fa-house" aria-hidden="true"></i>ホーム</span>
+                <span><i class="fa-solid fa-pen" aria-hidden="true"></i><ruby>問題<rt>もんだい</rt></ruby></span>
+                <span><i class="fa-solid fa-book" aria-hidden="true"></i><ruby>単語<rt>たんご</rt></ruby></span>
+                <span><i class="fa-solid fa-trophy" aria-hidden="true"></i><ruby>模試<rt>もし</rt></ruby></span>
+                <span><i class="fa-solid fa-user" aria-hidden="true"></i>マイページ</span>
+              </div>
+            </div>
+          </div>
+          <p class="phone-note"><ruby>画面<rt>がめん</rt></ruby>イメージ</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. スペック -->
+    <section class="spec">
+      <div class="halftone"></div>
+      <div class="spec-grid container">
+        <div class="spec-card dark reveal">
+          <p class="spec-num en">4<small><ruby>分野<rt>ぶんや</rt></ruby></small></p>
+          <p class="spec-title"><ruby>人気<rt>にんき</rt></ruby>の4<ruby>分野<rt>ぶんや</rt></ruby>に<ruby>対応<rt>たいおう</rt></ruby></p>
+          <p class="spec-note"><ruby>介護<rt>かいご</rt></ruby>・ビルクリーニング・<ruby>宿泊<rt>しゅくはく</rt></ruby>・<ruby>工業製品製造業<rt>こうぎょうせいひんせいぞうぎょう</rt></ruby></p>
+        </div>
+        <div class="spec-card dark tilt-r reveal" style="transition-delay:100ms">
+          <p class="spec-num en">3<small>STAGE</small></p>
+          <p class="spec-title">EASY → NORMAL → HARD</p>
+          <p class="spec-note"><ruby>模試<rt>もし</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>すると<ruby>次<rt>つぎ</rt></ruby>のSTAGEへ</p>
+        </div>
+        <div class="spec-card dark reveal" style="transition-delay:200ms">
+          <p class="spec-num en">¥5,000</p>
+          <p class="spec-title">1<ruby>分野<rt>ぶんや</rt></ruby>（<ruby>税込<rt>ぜいこみ</rt></ruby>）</p>
+          <p class="spec-note">4<ruby>分野<rt>ぶんや</rt></ruby>まとめて ¥18,000（<ruby>税込<rt>ぜいこみ</rt></ruby>）</p>
+        </div>
+        <div class="spec-card dark tilt-r reveal" style="transition-delay:300ms">
+          <p class="spec-num en">NO LIMIT</p>
+          <p class="spec-title"><ruby>期限<rt>きげん</rt></ruby>なし・<ruby>買<rt>か</rt></ruby>い<ruby>切<rt>き</rt></ruby>り</p>
+          <p class="spec-note"><ruby>毎月<rt>まいつき</rt></ruby>のお<ruby>支払<rt>しはら</rt></ruby>いはありません</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 特長 -->
+    <section id="features" class="sec container">
+      <div class="sec-head reveal">
+        <span class="sec-en en">SYSTEM FEATURES</span>
+        <h2 class="sec-title stroke-red"><ruby>合格<rt>ごうかく</rt></ruby>に<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>機能<rt>きのう</rt></ruby>を<br><span class="t-yellow">ひとつにまとめました！</span></h2>
+        <p class="sec-lead">6つの<ruby>機能<rt>きのう</rt></ruby>がつながって、<ruby>留学生<rt>りゅうがくせい</rt></ruby>でも<ruby>続<rt>つづ</rt></ruby>けやすい<ruby>学習<rt>がくしゅう</rt></ruby>をつくります。</p>
+      </div>
+
+      <div class="feat-grid">
+        <article class="feat light box reveal">
+          <div class="feat-top"><span class="feat-no en">FEATURE 01</span><i class="fa-solid fa-desktop" aria-hidden="true"></i></div>
+          <h3><ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby></h3>
+          <p><ruby>試験会場<rt>しけんかいじょう</rt></ruby>のパソコン<ruby>受験<rt>じゅけん</rt></ruby>（CBT）と<ruby>同<rt>おな</rt></ruby>じ<ruby>出題<rt>しゅつだい</rt></ruby>の<ruby>形式<rt>けいしき</rt></ruby>で<ruby>練習<rt>れんしゅう</rt></ruby>できます。</p>
+          <ul>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>分野<rt>ぶんや</rt></ruby>ごとの<ruby>問題<rt>もんだい</rt></ruby>と<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby></li>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i>すべての<ruby>問題<rt>もんだい</rt></ruby>にやさしい<ruby>解説<rt>かいせつ</rt></ruby>つき</li>
+          </ul>
+        </article>
+
+        <article class="feat light box reveal" style="transition-delay:150ms">
+          <div class="feat-top"><span class="feat-no is-black en">FEATURE 02</span><i class="fa-solid fa-stairs" aria-hidden="true"></i></div>
+          <h3>STAGE<ruby>制<rt>せい</rt></ruby>でステップアップ</h3>
+          <p>EASY（<ruby>基礎<rt>きそ</rt></ruby>）→ NORMAL（<ruby>本番<rt>ほんばん</rt></ruby>レベル）→ HARD（<ruby>応用<rt>おうよう</rt></ruby>）。<ruby>模試<rt>もし</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>すると、<ruby>次<rt>つぎ</rt></ruby>のSTAGEに<ruby>進<rt>すす</rt></ruby>めます。</p>
+          <ul>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i>ゲームのように<ruby>楽<rt>たの</rt></ruby>しく<ruby>進<rt>すす</rt></ruby>める</li>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>合格<rt>ごうかく</rt></ruby>ラインをこえる<ruby>自信<rt>じしん</rt></ruby>がつく</li>
+          </ul>
+        </article>
+
+        <article class="feat light box reveal" style="transition-delay:300ms">
+          <div class="feat-top"><span class="feat-no en">FEATURE 03</span><i class="fa-solid fa-language" aria-hidden="true"></i></div>
+          <h3>ふりがな ON/OFF</h3>
+          <p><ruby>最初<rt>さいしょ</rt></ruby>はふりがなONで<ruby>意味<rt>いみ</rt></ruby>をつかみ、<ruby>慣<rt>な</rt></ruby>れてきたらOFFにして、<ruby>漢字<rt>かんじ</rt></ruby>だけで<ruby>読<rt>よ</rt></ruby>めるか<ruby>確<rt>たし</rt></ruby>かめます。</p>
+          <ul>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i>ワンタップでいつでも<ruby>切<rt>き</rt></ruby>りかえ</li>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>現場<rt>げんば</rt></ruby>の<ruby>漢字<rt>かんじ</rt></ruby>も<ruby>自然<rt>しぜん</rt></ruby>に<ruby>覚<rt>おぼ</rt></ruby>えられる</li>
+          </ul>
+        </article>
+
+        <article class="feat light box reveal">
+          <div class="feat-top"><span class="feat-no is-black en">FEATURE 04</span><i class="fa-solid fa-clone" aria-hidden="true"></i></div>
+          <h3><ruby>現場<rt>げんば</rt></ruby>の<ruby>単語<rt>たんご</rt></ruby>カード</h3>
+          <p><ruby>介護<rt>かいご</rt></ruby>・<ruby>清掃<rt>せいそう</rt></ruby>・ホテル・<ruby>工場<rt>こうじょう</rt></ruby>で<ruby>使<rt>つか</rt></ruby>う<ruby>言葉<rt>ことば</rt></ruby>を、カードでスキマ<ruby>時間<rt>じかん</rt></ruby>に<ruby>覚<rt>おぼ</rt></ruby>えられます。</p>
+          <ul>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i>「<ruby>覚<rt>おぼ</rt></ruby>えた」「もう<ruby>一度<rt>いちど</rt></ruby>」で<ruby>分<rt>わ</rt></ruby>けられる</li>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>就職<rt>しゅうしょく</rt></ruby>したあとの<ruby>仕事<rt>しごと</rt></ruby>でも<ruby>役<rt>やく</rt></ruby>に<ruby>立<rt>た</rt></ruby>つ</li>
+          </ul>
+        </article>
+
+        <article class="feat light box reveal" style="transition-delay:150ms">
+          <div class="feat-top"><span class="feat-no en">FEATURE 05</span><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></div>
+          <h3>まちがい<ruby>復習<rt>ふくしゅう</rt></ruby>リスト</h3>
+          <p>まちがえた<ruby>問題<rt>もんだい</rt></ruby>は<ruby>自動<rt>じどう</rt></ruby>でリストに<ruby>入<rt>はい</rt></ruby>ります。<ruby>苦手<rt>にがて</rt></ruby>なところだけを、くり<ruby>返<rt>かえ</rt></ruby>し<ruby>解<rt>と</rt></ruby>き<ruby>直<rt>なお</rt></ruby>せます。</p>
+          <ul>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>試験<rt>しけん</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>の<ruby>苦手<rt>にがて</rt></ruby><ruby>対策<rt>たいさく</rt></ruby>に</li>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>正解<rt>せいかい</rt></ruby>できたらリストから<ruby>消<rt>き</rt></ruby>える</li>
+          </ul>
+        </article>
+
+        <article class="feat light box reveal" style="transition-delay:300ms">
+          <div class="feat-top"><span class="feat-no is-black en">FEATURE 06</span><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></div>
+          <h3><ruby>正答率<rt>せいとうりつ</rt></ruby>・<ruby>学習<rt>がくしゅう</rt></ruby>の<ruby>記録<rt>きろく</rt></ruby></h3>
+          <p><ruby>毎日<rt>まいにち</rt></ruby>の<ruby>学習<rt>がくしゅう</rt></ruby>や、<ruby>分野<rt>ぶんや</rt></ruby>ごとの<ruby>正答率<rt>せいとうりつ</rt></ruby>をグラフで<ruby>見<rt>み</rt></ruby>られます。<ruby>合格<rt>ごうかく</rt></ruby>までのきょりが、ひと<ruby>目<rt>め</rt></ruby>でわかります。</p>
+          <ul>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>連続<rt>れんぞく</rt></ruby><ruby>学習<rt>がくしゅう</rt></ruby>の<ruby>記録<rt>きろく</rt></ruby>でやる<ruby>気<rt>き</rt></ruby>が<ruby>続<rt>つづ</rt></ruby>く</li>
+            <li><i class="fa-solid fa-star" aria-hidden="true"></i>スマホでもPCでも<ruby>同<rt>おな</rt></ruby>じ<ruby>記録<rt>きろく</rt></ruby></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4. 体験デモ -->
+    <section id="demo" class="demo">
+      <div class="halftone"></div>
+      <div class="demo-in">
+        <div class="sec-head reveal">
+          <span class="sec-en en t-yellow">FREE DEMO // <ruby>無料<rt>むりょう</rt></ruby><ruby>体験<rt>たいけん</rt></ruby></span>
+          <h2 class="sec-title stroke-red">4<ruby>分野<rt>ぶんや</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>を<span class="t-yellow"><ruby>体験<rt>たいけん</rt></ruby>してみよう！</span></h2>
+          <p class="sec-lead"><ruby>下<rt>した</rt></ruby>のボタンで<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んで、サンプル<ruby>問題<rt>もんだい</rt></ruby>にチャレンジしてください（<ruby>各<rt>かく</rt></ruby><ruby>分野<rt>ぶんや</rt></ruby>3<ruby>問<rt>もん</rt></ruby>）。</p>
+        </div>
+
+        <div id="demo-fields" class="demo-fields reveal" style="transition-delay:150ms"></div>
+
+        <div class="demo-card light box reveal" style="transition-delay:300ms">
+          <div class="demo-top">
+            <div class="demo-top-l">
+              <span id="q-field" class="demo-badge"></span>
+              <span id="q-label" class="demo-label en"></span>
+            </div>
+            <div class="demo-score dark">
+              <i class="fa-solid fa-fire" aria-hidden="true"></i><ruby>正解<rt>せいかい</rt></ruby>: <span id="q-score" class="en">0</span> <ruby>問<rt>もん</rt></ruby>
+            </div>
+          </div>
+
+          <div class="demo-q">
+            <div class="demo-q-label">【サンプル<ruby>問題<rt>もんだい</rt></ruby>】</div>
+            <p id="q-text" class="demo-q-text"></p>
+          </div>
+
+          <div id="q-choices" class="demo-choices"></div>
+
+          <div class="demo-bar">
+            <div class="demo-sel">
+              <span class="demo-sel-tag"><ruby>選択中<rt>せんたくちゅう</rt></ruby></span>
+              <span id="q-selected" class="demo-sel-text"></span>
+            </div>
+            <div class="demo-btns">
+              <button type="button" id="q-check" class="btn btn-red btn-clip"><i class="fa-solid fa-check" aria-hidden="true"></i><span><ruby>答<rt>こた</rt></ruby>えを<ruby>決<rt>き</rt></ruby>める</span></button>
+              <button type="button" id="q-next" class="btn btn-black"></button>
+            </div>
+          </div>
+
+          <div id="q-exp" class="demo-exp dark" hidden aria-live="polite">
+            <div class="demo-exp-head">
+              <span id="q-result" class="result-badge en">RESULT</span>
+              <h3>やさしい<ruby>解説<rt>かいせつ</rt></ruby></h3>
+            </div>
+            <p id="q-exp-text"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 分野 -->
+    <section id="fields" class="sec container">
+      <div class="fields-head reveal">
+        <div>
+          <span class="sec-en en">TARGET FIELDS // <ruby>対応<rt>たいおう</rt></ruby>4<ruby>分野<rt>ぶんや</rt></ruby></span>
+          <h2 class="sec-title stroke-red"><ruby>働<rt>はたら</rt></ruby>きたい<ruby>業界<rt>ぎょうかい</rt></ruby>の<span class="t-yellow"><ruby>試験<rt>しけん</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぼう！</span></h2>
+        </div>
+        <div class="fields-price">
+          1<ruby>分野<rt>ぶんや</rt></ruby> <span class="en">¥5,000</span>（<ruby>税込<rt>ぜいこみ</rt></ruby>）
+        </div>
+      </div>
+      <div id="fields-grid" class="fields-grid"></div>
+    </section>
+
+    <!-- 6. STAGE -->
+    <section id="stage" class="stage">
+      <div class="halftone"></div>
+      <div class="container stage-in">
+        <div class="sec-head reveal">
+          <span class="sec-en en t-yellow stroke">CURRICULUM &amp; STAGE</span>
+          <h2 class="sec-title stroke">3つのSTAGEで<span class="t-yellow"><ruby>合格<rt>ごうかく</rt></ruby>レベルへ！</span></h2>
+          <p class="sec-lead t-white"><ruby>最初<rt>さいしょ</rt></ruby>から<ruby>難<rt>むずか</rt></ruby>しい<ruby>問題<rt>もんだい</rt></ruby>は<ruby>解<rt>と</rt></ruby>きません。やさしい<ruby>基礎<rt>きそ</rt></ruby>から<ruby>順番<rt>じゅんばん</rt></ruby>にステップアップします。</p>
+        </div>
+
+        <div class="stage-grid">
+          <div class="stage-card dark reveal">
+            <div class="stage-top"><span class="stage-tag is-white en">STAGE 01 // EASY</span><span class="stage-sub"><ruby>基礎<rt>きそ</rt></ruby></span></div>
+            <h3 class="t-yellow"><ruby>現場<rt>げんば</rt></ruby>の<ruby>言葉<rt>ことば</rt></ruby>と<ruby>基本<rt>きほん</rt></ruby>のルール</h3>
+            <p>まずは<ruby>現場<rt>げんば</rt></ruby>でよく<ruby>使<rt>つか</rt></ruby>う<ruby>言葉<rt>ことば</rt></ruby>と、<ruby>安全<rt>あんぜん</rt></ruby>・<ruby>衛生<rt>えいせい</rt></ruby>の<ruby>基本<rt>きほん</rt></ruby>のルールを、ふりがなつきで<ruby>覚<rt>おぼ</rt></ruby>えます。</p>
+            <div class="stage-goal">EASY の<ruby>模試<rt>もし</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>すると NORMAL へ</div>
+          </div>
+          <div class="stage-card dark is-yellow tilt-r reveal" style="transition-delay:150ms">
+            <div class="stage-top"><span class="stage-tag is-yellow en">STAGE 02 // NORMAL</span><span class="stage-sub"><ruby>本番<rt>ほんばん</rt></ruby>レベル</span></div>
+            <h3><ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>で<ruby>練習<rt>れんしゅう</rt></ruby></h3>
+            <p><ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>・<ruby>時間<rt>じかん</rt></ruby>で<ruby>練習<rt>れんしゅう</rt></ruby>します。イラストの<ruby>問題<rt>もんだい</rt></ruby>や、<ruby>場面<rt>ばめん</rt></ruby>で<ruby>判断<rt>はんだん</rt></ruby>する<ruby>問題<rt>もんだい</rt></ruby>にも<ruby>慣<rt>な</rt></ruby>れます。</p>
+            <div class="stage-goal">NORMAL の<ruby>模試<rt>もし</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>すると HARD へ</div>
+          </div>
+          <div class="stage-card dark reveal" style="transition-delay:300ms">
+            <div class="stage-top"><span class="stage-tag is-red en">STAGE 03 // HARD</span><span class="stage-sub"><ruby>仕上<rt>しあ</rt></ruby>げ</span></div>
+            <h3 class="t-yellow"><ruby>応用<rt>おうよう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>で<ruby>仕上<rt>しあ</rt></ruby>げ</h3>
+            <p><ruby>本番<rt>ほんばん</rt></ruby>より<ruby>少<rt>すこ</rt></ruby>し<ruby>難<rt>むずか</rt></ruby>しい<ruby>応用<rt>おうよう</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>と、ふりがなOFFの<ruby>練習<rt>れんしゅう</rt></ruby>で、<ruby>本番<rt>ほんばん</rt></ruby>で<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いて<ruby>解<rt>と</rt></ruby>ける<ruby>力<rt>ちから</rt></ruby>をつけます。</p>
+            <div class="stage-goal">HARD の<ruby>模試<rt>もし</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>して<ruby>本番<rt>ほんばん</rt></ruby>へ！</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. ご利用の流れ -->
+    <section id="flow" class="sec container">
+      <div class="sec-head reveal">
+        <span class="sec-en en">HOW TO START // ご<ruby>利用<rt>りよう</rt></ruby>の<ruby>流<rt>なが</rt></ruby>れ</span>
+        <h2 class="sec-title stroke-red">お<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みから<span class="t-yellow"><ruby>学習<rt>がくしゅう</rt></ruby><ruby>開始<rt>かいし</rt></ruby>まで</span></h2>
+      </div>
+      <div class="flow-grid">
+        <div class="flow-card dark reveal">
+          <div class="flow-no en">01</div>
+          <h3><ruby>分野<rt>ぶんや</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んで<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</h3>
+          <p>1<ruby>分野<rt>ぶんや</rt></ruby>か4<ruby>分野<rt>ぶんや</rt></ruby>まとめてを<ruby>選<rt>えら</rt></ruby>び、お<ruby>名前<rt>なまえ</rt></ruby>とメールアドレスを<ruby>入力<rt>にゅうりょく</rt></ruby>します。</p>
+        </div>
+        <div class="flow-card dark reveal" style="transition-delay:100ms">
+          <div class="flow-no en">02</div>
+          <h3><ruby>銀行<rt>ぎんこう</rt></ruby><ruby>振込<rt>ふりこみ</rt></ruby>でお<ruby>支払<rt>しはら</rt></ruby>い</h3>
+          <p><ruby>案内<rt>あんない</rt></ruby>のメールに<ruby>書<rt>か</rt></ruby>いてある<ruby>口座<rt>こうざ</rt></ruby>に、<ruby>料金<rt>りょうきん</rt></ruby>をお<ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>みください。クレジットカードはいりません。</p>
+        </div>
+        <div class="flow-card dark reveal" style="transition-delay:200ms">
+          <div class="flow-no en">03</div>
+          <h3>ID・パスワードが<ruby>届<rt>とど</rt></ruby>く</h3>
+          <p>お<ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>みを<ruby>確認<rt>かくにん</rt></ruby>したら、ログインIDとパスワードをメールでお<ruby>届<rt>とど</rt></ruby>けします。</p>
+        </div>
+        <div class="flow-card dark is-goal reveal" style="transition-delay:300ms">
+          <div class="flow-no en">04</div>
+          <h3><ruby>期限<rt>きげん</rt></ruby>なしで<ruby>学習<rt>がくしゅう</rt></ruby>スタート！</h3>
+          <p>スマホ・PCからいつでもログインできます。<ruby>合格<rt>ごうかく</rt></ruby>するまで、<ruby>自分<rt>じぶん</rt></ruby>のペースで<ruby>学習<rt>がくしゅう</rt></ruby>できます。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. 料金 -->
+    <section id="pricing" class="pricing">
+      <div class="halftone"></div>
+      <div class="pricing-in">
+        <div class="sec-head reveal">
+          <span class="sec-en en t-yellow">PRICING PLAN // <ruby>料金<rt>りょうきん</rt></ruby>プラン</span>
+          <h2 class="sec-title stroke-red">わかりやすい<span class="t-yellow"><ruby>買<rt>か</rt></ruby>い<ruby>切<rt>き</rt></ruby>りの<ruby>料金<rt>りょうきん</rt></ruby></span></h2>
+          <p class="sec-lead"><ruby>毎月<rt>まいつき</rt></ruby>のお<ruby>支払<rt>しはら</rt></ruby>いや<ruby>追加<rt>ついか</rt></ruby>の<ruby>料金<rt>りょうきん</rt></ruby>はありません。<ruby>一度<rt>いちど</rt></ruby><ruby>買<rt>か</rt></ruby>えば、<ruby>期限<rt>きげん</rt></ruby>なしで<ruby>使<rt>つか</rt></ruby>えます。</p>
+        </div>
+
+        <div class="plans">
+          <div class="plan light box reveal">
+            <div class="plan-tag"><ruby>選<rt>えら</rt></ruby>んだ1<ruby>分野<rt>ぶんや</rt></ruby>だけ</div>
+            <h3>1<ruby>分野<rt>ぶんや</rt></ruby>プラン</h3>
+            <div class="plan-price dark">
+              <span class="plan-yen">¥</span><span class="plan-num en">5,000</span>
+              <span class="plan-note">（<ruby>税込<rt>ぜいこみ</rt></ruby>・<ruby>期限<rt>きげん</rt></ruby>なし）</span>
+            </div>
+            <label for="plan-select" class="plan-label"><ruby>分野<rt>ぶんや</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぶ</label>
+            <select id="plan-select" class="plan-select">
+              <option value="kaigo">介護</option>
+              <option value="building">ビルクリーニング</option>
+              <option value="accommodation">宿泊</option>
+              <option value="manufacturing">工業製品製造業</option>
+            </select>
+            <button type="button" class="btn btn-red btn-clip btn-block" data-apply="select">
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>この<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</span>
+            </button>
+          </div>
+
+          <div class="plan is-best dark box reveal" style="transition-delay:150ms">
+            <div class="plan-ribbon en">BEST // おトク</div>
+            <div class="plan-tag is-yellow">4<ruby>分野<rt>ぶんや</rt></ruby>ぜんぶ</div>
+            <h3>4<ruby>分野<rt>ぶんや</rt></ruby>まとめてプラン</h3>
+            <div class="plan-price">
+              <span class="plan-yen">¥</span><span class="plan-num en">18,000</span>
+              <span class="plan-note">（<ruby>税込<rt>ぜいこみ</rt></ruby>・<ruby>期限<rt>きげん</rt></ruby>なし）</span>
+            </div>
+            <p class="plan-save">4<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>別々<rt>べつべつ</rt></ruby>に<ruby>買<rt>か</rt></ruby>うと ¥20,000 → <b>¥2,000 おトク</b></p>
+            <p class="plan-fields"><ruby>介護<rt>かいご</rt></ruby>・ビルクリーニング・<ruby>宿泊<rt>しゅくはく</rt></ruby>・<ruby>工業製品製造業<rt>こうぎょうせいひんせいぞうぎょう</rt></ruby></p>
+            <button type="button" class="btn btn-yellow btn-clip btn-block" data-apply="all">
+              <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>4<ruby>分野<rt>ぶんや</rt></ruby>まとめて<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</span>
+            </button>
+          </div>
+        </div>
+
+        <ul class="plan-includes reveal">
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><ruby>分野<rt>ぶんや</rt></ruby>ごとの<ruby>問題<rt>もんだい</rt></ruby>（ぜんぶのSTAGE）</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i><ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby></li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i>ふりがなつきの<ruby>単語<rt>たんご</rt></ruby>カード</li>
+          <li><i class="fa-solid fa-check" aria-hidden="true"></i>まちがい<ruby>復習<rt>ふくしゅう</rt></ruby>・<ruby>成績<rt>せいせき</rt></ruby>のグラフ</li>
+        </ul>
+        <p class="plan-small">※ お<ruby>支払<rt>しはら</rt></ruby>いは<ruby>銀行<rt>ぎんこう</rt></ruby><ruby>振込<rt>ふりこみ</rt></ruby>だけです。1<ruby>分野<rt>ぶんや</rt></ruby>プランを<ruby>買<rt>か</rt></ruby>ったあとで、ほかの<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>追加<rt>ついか</rt></ruby>で<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>むこともできます。</p>
+      </div>
+    </section>
+
+    <!-- 9. Q&A -->
+    <section id="faq" class="sec container faq-sec">
+      <div class="sec-head reveal">
+        <span class="sec-en en">Q&amp;A // よくある<ruby>質問<rt>しつもん</rt></ruby></span>
+        <h2 class="sec-title stroke-red"><ruby>留学生<rt>りゅうがくせい</rt></ruby>からの<span class="t-yellow">よくある<ruby>質問<rt>しつもん</rt></ruby></span></h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq dark reveal" open>
+          <summary><span><span class="faq-q en">Q1.</span><ruby>漢字<rt>かんじ</rt></ruby>が<ruby>苦手<rt>にがて</rt></ruby>でも<ruby>勉強<rt>べんきょう</rt></ruby>できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></summary>
+          <p>はい、<ruby>大丈夫<rt>だいじょうぶ</rt></ruby>です！<ruby>画面<rt>がめん</rt></ruby>の<ruby>右上<rt>みぎうえ</rt></ruby>の「ふりがな」をONにすると、<ruby>問題<rt>もんだい</rt></ruby>・<ruby>選択肢<rt>せんたくし</rt></ruby>・<ruby>解説<rt>かいせつ</rt></ruby>にふりがなが<ruby>出<rt>で</rt></ruby>ます。<ruby>本番<rt>ほんばん</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>はOFFにして<ruby>練習<rt>れんしゅう</rt></ruby>することもできます。</p>
+        </details>
+        <details class="faq dark reveal" style="transition-delay:100ms">
+          <summary><span><span class="faq-q en">Q2.</span><ruby>料金<rt>りょうきん</rt></ruby>はいくらですか？<ruby>毎月<rt>まいつき</rt></ruby>かかりますか？</span><span class="faq-plus" aria-hidden="true">＋</span></summary>
+          <p>1<ruby>分野<rt>ぶんや</rt></ruby><b class="t-yellow">¥5,000（<ruby>税込<rt>ぜいこみ</rt></ruby>）</b>、4<ruby>分野<rt>ぶんや</rt></ruby>まとめて<b class="t-yellow">¥18,000（<ruby>税込<rt>ぜいこみ</rt></ruby>）</b>の、1<ruby>回<rt>かい</rt></ruby>だけのお<ruby>支払<rt>しはら</rt></ruby>いです。<ruby>毎月<rt>まいつき</rt></ruby>のお<ruby>支払<rt>しはら</rt></ruby>いや<ruby>追加<rt>ついか</rt></ruby>の<ruby>料金<rt>りょうきん</rt></ruby>はありません。<ruby>期限<rt>きげん</rt></ruby>もないので、ずっと<ruby>使<rt>つか</rt></ruby>えます。</p>
+        </details>
+        <details class="faq dark reveal" style="transition-delay:200ms">
+          <summary><span><span class="faq-q en">Q3.</span>クレジットカードがなくても<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>めますか？</span><span class="faq-plus" aria-hidden="true">＋</span></summary>
+          <p>はい！お<ruby>支払<rt>しはら</rt></ruby>いは<ruby>銀行<rt>ぎんこう</rt></ruby><ruby>振込<rt>ふりこみ</rt></ruby>だけです。<ruby>日本<rt>にほん</rt></ruby>の<ruby>銀行<rt>ぎんこう</rt></ruby>のATMやネットバンキングから<ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>めるので、クレジットカードがなくても<ruby>安心<rt>あんしん</rt></ruby>です。</p>
+        </details>
+        <details class="faq dark reveal" style="transition-delay:300ms">
+          <summary><span><span class="faq-q en">Q4.</span>スマートフォンだけでも<ruby>学習<rt>がくしゅう</rt></ruby>できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></summary>
+          <p>はい、iPhone・Android、タブレット、パソコンで<ruby>使<rt>つか</rt></ruby>えます。アルバイトや<ruby>学校<rt>がっこう</rt></ruby>への<ruby>移動<rt>いどう</rt></ruby>の<ruby>時間<rt>じかん</rt></ruby>はスマホで、<ruby>家<rt>いえ</rt></ruby>ではパソコンの<ruby>大<rt>おお</rt></ruby>きな<ruby>画面<rt>がめん</rt></ruby>で<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby>、という<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>もできます。</p>
+        </details>
+      </div>
+    </section>
+
+    <!-- 10. 特定商取引法に基づく表記 -->
+    <section id="law" class="sec container law-sec">
+      <div class="sec-head reveal">
+        <span class="sec-en en">LEGAL NOTICE</span>
+        <h2 class="sec-title sec-title-sm">特定商取引法に基づく表記</h2>
+      </div>
+      <dl class="law light reveal">
+        <div><dt>販売事業者名</dt><dd>ReicherRick</dd></div>
+        <div><dt>代表者</dt><dd>中村 力</dd></div>
+        <div><dt>所在地</dt><dd>〒902-0062 沖縄県那覇市字松川362番地9　シティテラス松川402号</dd></div>
+        <div><dt>電話番号</dt><dd>080-9107-4916</dd></div>
+        <div><dt>販売価格</dt><dd>1分野 ¥5,000（税込）／4分野まとめて ¥18,000（税込）。どちらも買い切り・期限なし</dd></div>
+        <div><dt>お支払い方法</dt><dd>銀行振込のみ（振込手数料はお客様のご負担）</dd></div>
+        <div><dt>お支払い時期</dt><dd>お申し込みから7日以内</dd></div>
+        <div><dt>サービスの提供時期</dt><dd>入金を確認し、アカウントを発行した時点から、期限なくご利用いただけます。</dd></div>
+        <div><dt>返金</dt><dd>アカウント発行前は全額を返金します。発行後は、原則として返金できません。</dd></div>
+        <div><dt>お問い合わせ</dt><dd><a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">お問い合わせページ</a></dd></div>
+      </dl>
+    </section>
+
+  </main>
+
+  <footer class="ft">
+    <div class="ft-in container">
+      <div class="ft-brand">
+        <div class="ft-name"><span class="en">R-EALIZE</span><ruby>留学生<rt>りゅうがくせい</rt></ruby>向け <ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby> <ruby>試験対策<rt>しけんたいさく</rt></ruby>システム</div>
+        <p><ruby>対応<rt>たいおう</rt></ruby>4<ruby>分野<rt>ぶんや</rt></ruby>：<ruby>介護<rt>かいご</rt></ruby>・ビルクリーニング・<ruby>宿泊<rt>しゅくはく</rt></ruby>・<ruby>工業製品製造業<rt>こうぎょうせいひんせいぞうぎょう</rt></ruby>（1<ruby>分野<rt>ぶんや</rt></ruby> ¥5,000・4<ruby>分野<rt>ぶんや</rt></ruby>まとめて ¥18,000、<ruby>税込<rt>ぜいこみ</rt></ruby>）</p>
+      </div>
+      <nav class="ft-nav" aria-label="フッターメニュー">
+        <a href="#features"><ruby>特長<rt>とくちょう</rt></ruby></a>
+        <a href="#demo"><ruby>体験<rt>たいけん</rt></ruby>デモ</a>
+        <a href="#fields">4<ruby>分野<rt>ぶんや</rt></ruby></a>
+        <a href="#pricing"><ruby>料金<rt>りょうきん</rt></ruby></a>
+        <a href="#faq">Q&amp;A</a>
+        <a href="#law">特定商取引法に基づく表記</a>
+        <a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせ</a>
+        <a href="https://jprojectsriki-cpu.github.io/rikis_collection/">R-SERIES <ruby>一覧<rt>いちらん</rt></ruby>へ</a>
+      </nav>
+    </div>
+    <p class="ft-copy">© 2026 R-EALIZE / ReicherRick. All rights reserved.</p>
+  </footer>
+
+  <script src="js/lp.js?v=20261119a"></script>
+</body>
+</html>
