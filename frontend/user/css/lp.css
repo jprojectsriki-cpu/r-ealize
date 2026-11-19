@@ -43,7 +43,8 @@ button, select { font: inherit; }
 
 /* ふりがな */
 ruby { ruby-align: center; }
-rt { font-size: .58em; font-weight: 700; letter-spacing: .02em; }
+/* 読みが漢字より長いとき、漢字の間が広がって凸凹にならないよう、ふりがなを左右に少しはみ出させる */
+rt { font-size: .5em; font-weight: 700; letter-spacing: 0; margin-inline: -1em; }
 .light rt { color: var(--red); }
 .dark rt { color: var(--yellow); }
 body.furigana-off rt { display: none; }
@@ -326,24 +327,16 @@ body.furigana-off rt { display: none; }
 .choice:disabled { cursor: default; }
 .choice-label { flex-shrink: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #000; color: var(--yellow); font-size: 18px; }
 .choice-text { line-height: 2; }
-.choice.is-selected { background: var(--yellow); outline: 4px solid var(--red); outline-offset: -1px; }
 .choice.is-correct { background: #dcfce7; border-color: #15803d; outline: 4px solid #15803d; outline-offset: -1px; }
 .choice.is-correct .choice-label { background: #15803d; color: #fff; }
 .choice.is-wrong { background: #e5e5e5; color: #555; outline: none; }
 .choice.is-wrong .choice-label { background: #777; color: #fff; }
 
-.demo-bar { display: flex; flex-direction: column; gap: 16px; align-items: stretch; background: #e5e7eb; border: 2px solid #000; padding: 16px; }
-.demo-sel { font-size: 14px; font-weight: 900; line-height: 2; }
-.demo-sel-tag { background: #000; color: #fff; font-size: 12px; padding: 2px 8px; margin-right: 8px; }
-.demo-sel-tag rt { color: var(--yellow); }
-.demo-sel-text { color: var(--red); }
-.sel-label { background: #000; color: var(--yellow); padding: 0 8px; margin-right: 4px; }
-.demo-btns { display: flex; flex-direction: column; gap: 12px; }
-.demo-btns .btn { width: 100%; }
-.demo-btns .btn-red { font-size: 16px; }
-.demo-btns .btn-black rt { color: var(--yellow); }
+.demo-bar { display: flex; justify-content: flex-end; margin-top: 20px; }
+.demo-bar .btn { width: 100%; }
+.demo-bar .btn rt { color: var(--yellow); }
 
-.demo-exp { margin-top: 20px; padding: 20px; border-left: 8px solid var(--yellow); }
+.demo-exp { margin-top: 4px; padding: 20px; border-left: 8px solid var(--yellow); }
 .demo-exp-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
 .demo-exp-head h3 { font-size: 18px; font-weight: 900; color: var(--yellow); }
 .demo-exp-head h3 rt { color: #fff; }
@@ -353,11 +346,7 @@ body.furigana-off rt { display: none; }
 .result-badge.is-miss { background: #555; }
 .result-badge.is-warn { background: var(--yellow); color: #000; }
 
-@media (min-width: 640px) {
-  .demo-bar { flex-direction: row; align-items: center; justify-content: space-between; }
-  .demo-btns { flex-direction: row; }
-  .demo-btns .btn { width: auto; }
-}
+@media (min-width: 640px) { .demo-bar .btn { width: auto; } }
 @media (min-width: 768px) {
   .demo { padding: 96px 32px; }
   .demo-card { padding: 32px; }
@@ -468,13 +457,12 @@ body.furigana-off rt { display: none; }
 .plan-fields { font-size: 14px; font-weight: 700; color: #d1d5db; flex: 1; }
 .plan .btn { margin-top: auto; font-size: 17px; padding-top: 14px; padding-bottom: 14px; }
 .plan-ribbon { position: absolute; top: -16px; left: -10px; background: var(--yellow); color: #000; font-size: 18px; padding: 2px 14px; border: 2px solid #000; transform: rotate(-3deg); }
-.plan-includes { display: grid; gap: 8px; margin-top: 40px; font-size: 14px; font-weight: 900; }
-.plan-includes li { display: flex; align-items: center; gap: 8px; }
-.plan-includes i { color: var(--red); }
-.plan-includes rt { color: var(--yellow); }
-.plan-small { margin-top: 16px; font-size: 12px; font-weight: 700; color: var(--gray); }
+.plan-inc { display: grid; gap: 6px; font-size: 14px; font-weight: 900; padding: 12px 0; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; }
+.plan-inc li { display: flex; align-items: flex-start; gap: 8px; }
+.plan-inc i { color: var(--red); margin-top: 5px; }
+.plan.is-best .plan-inc i { color: var(--yellow); }
+.plan-small { margin-top: 32px; font-size: 12px; font-weight: 700; color: var(--gray); }
 .plan-small rt { color: var(--yellow); }
-@media (min-width: 640px) { .plan-includes { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 768px) { .pricing { padding: 96px 32px; } .plans { grid-template-columns: 1fr 1fr; } .plan-num { font-size: 68px; } }
 
 /* ===== Q&A ===== */
@@ -489,28 +477,41 @@ body.furigana-off rt { display: none; }
 .faq p { font-size: 14px; font-weight: 700; color: #d1d5db; line-height: 2; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .2); }
 @media (min-width: 640px) { .faq summary { font-size: 18px; } }
 
-/* ===== 特商法 ===== */
-.law-sec { max-width: 896px; padding-top: 0; }
-.law-sec .sec-head { margin-bottom: 24px; }
-.law { border: 3px solid #000; box-shadow: 8px 8px 0 var(--red); }
+/* ===== 特商法（モーダル） ===== */
+.modal-card.doc-card, .modal-card.doc-card:hover { max-width: 640px; transform: none; border: 4px solid #000; box-shadow: 8px 8px 0 var(--red); }
+.law { border: 2px solid #000; }
 .law > div { display: grid; grid-template-columns: 1fr; border-bottom: 1px solid #ccc; }
 .law > div:last-child { border-bottom: none; }
-.law dt { background: #e5e5e5; font-weight: 900; font-size: 14px; padding: 10px 16px; }
-.law dd { font-size: 14px; font-weight: 500; padding: 10px 16px; }
+.law dt { background: #e5e5e5; font-weight: 900; font-size: 14px; padding: 8px 14px; }
+.law dd { font-size: 14px; font-weight: 500; padding: 8px 14px; line-height: 1.8; }
 .law a { color: var(--red); text-decoration: underline; font-weight: 700; }
-@media (min-width: 640px) { .law > div { grid-template-columns: 200px 1fr; } }
+@media (min-width: 640px) { .law > div { grid-template-columns: 170px 1fr; } }
 
-/* ===== フッター ===== */
-.ft { background: #000; border-top: 4px solid var(--red); padding: 40px 0 24px; font-size: 13px; color: #9ca3af; }
-.ft-in { display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; }
-.ft-name { font-weight: 700; color: #fff; font-size: 15px; margin-bottom: 4px; }
-.ft-name .en { color: var(--red); font-size: 20px; margin-right: 8px; }
-.ft rt { color: var(--yellow); }
-.ft-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 16px; font-weight: 700; color: #fff; }
-.ft-nav a { display: inline-flex; align-items: center; min-height: 44px; }
-.ft-nav a:hover { color: var(--yellow); }
-.ft-copy { text-align: center; margin-top: 16px; font-size: 12px; }
-@media (min-width: 768px) { .ft-in { flex-direction: row; justify-content: space-between; text-align: left; } .ft-nav { justify-content: flex-end; max-width: 560px; } }
+/* ===== フッター（R-ESUME・R-ANGUAGE と同じ形：ブランド／プロダクト／アカウント／サポート） ===== */
+.site-footer { position: relative; background: #000; border-top: 4px solid var(--red); padding: 52px 0 28px; font-size: 14px; color: #fff; }
+.site-footer rt { color: var(--yellow); opacity: .85; }
+.footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.footer-brand { grid-column: 1 / -1; }
+.footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.footer-logo .logo-mark { font-size: 16px; }
+.footer-logo .brand-name { font-size: 24px; color: var(--yellow); }
+.footer-brand p { color: rgba(255, 255, 255, .78); line-height: 2; max-width: 30em; }
+.footer-series { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 8px; color: var(--yellow); font-weight: 700; }
+.footer-series:hover { text-decoration: underline; }
+.footer-head { margin-bottom: 8px; color: var(--yellow); font-weight: 700; letter-spacing: .05em; }
+.footer-head.en { font-size: 18px; font-weight: 400; }
+.footer-col ul { display: grid; }
+.footer-col a, .footer-col button {
+  display: block; min-height: 40px; padding: 6px 0; border: 0; background: none;
+  color: rgba(255, 255, 255, .88); font: inherit; line-height: 1.9; text-align: left; cursor: pointer; white-space: nowrap;
+}
+.footer-col a:hover, .footer-col button:hover { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.footer-col:last-child { grid-column: 1 / -1; }
+.copyright { margin-top: 32px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .18); color: rgba(255, 255, 255, .7); font-size: 13px; }
+@media (min-width: 900px) {
+  .footer-grid { grid-template-columns: minmax(0, 1.3fr) auto auto auto; column-gap: 48px; }
+  .footer-brand, .footer-col:last-child { grid-column: auto; }
+}
 
 /* ===== モーダル ===== */
 .modal { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(0, 0, 0, .85); }

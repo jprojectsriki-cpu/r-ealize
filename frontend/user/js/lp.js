@@ -263,7 +263,6 @@
     $('q-field').innerHTML = f.name;
     $('q-label').textContent = 'FIELD 0' + (fIndex + 1) + ' / 0' + FIELDS.length + ' · Q' + (idx + 1) + ' / ' + list.length;
     $('q-text').innerHTML = q.q;
-    $('q-selected').innerHTML = r('未選択', 'みせんたく');
     $('q-exp').hidden = true;
 
     var box = $('q-choices');
@@ -276,17 +275,16 @@
       btn.addEventListener('click', function () {
         if (cur.answered) return;
         cur.selected = i;
-        box.querySelectorAll('.choice').forEach(function (b) { b.classList.remove('is-selected'); });
-        btn.classList.add('is-selected');
-        $('q-selected').innerHTML = '<span class="sel-label en">' + LABELS[i] + '</span> ' + html;
+        checkAnswer();
       });
       box.appendChild(btn);
     });
 
     var isLast = idx === list.length - 1;
-    $('q-next').innerHTML = isLast
+    // ボタンは inline-flex なので、文字とふりがなを span でまとめる（まとめないと間があく）
+    $('q-next').innerHTML = '<span>' + (isLast
       ? r('次', 'つぎ') + 'の' + r('分野', 'ぶんや') + 'へ →'
-      : r('次', 'つぎ') + 'の' + r('問題', 'もんだい') + 'へ →';
+      : r('次', 'つぎ') + 'の' + r('問題', 'もんだい') + 'へ →') + '</span>';
   }
 
   function checkAnswer() {
@@ -295,14 +293,8 @@
     var badge = $('q-result');
     var text = $('q-exp-text');
 
+    if (cur.selected === null || cur.answered) return;
     exp.hidden = false;
-    if (cur.selected === null) {
-      badge.textContent = 'SELECT!';
-      badge.className = 'result-badge en is-warn';
-      text.innerHTML = r('選択肢', 'せんたくし') + 'を1つ' + r('選', 'えら') + 'んでから、「' + r('答', 'こた') + 'えを' + r('決', 'き') + 'める」を' + r('押', 'お') + 'してください。';
-      return;
-    }
-    if (cur.answered) return;
     cur.answered = true;
 
     var buttons = $('q-choices').querySelectorAll('.choice');
@@ -377,19 +369,28 @@
   function planPrice(id) {
     return id === 'all' ? '¥18,000（' + r('税込', 'ぜいこみ') + '）' : '¥5,000（' + r('税込', 'ぜいこみ') + '）';
   }
-  function openApply(id) {
+  var openModalEl = null;
+  function openModal(id) {
+    if (openModalEl) closeModal();
     lastFocus = document.activeElement;
-    $('apply-plan').innerHTML = planLabel(id);
-    $('apply-price').innerHTML = planPrice(id);
-    var m = $('apply-modal');
+    var m = $(id);
     m.hidden = false;
+    openModalEl = m;
     document.body.classList.add('no-scroll');
-    $('apply-close').focus();
+    var c = m.querySelector('.modal-close');
+    if (c) c.focus();
   }
-  function closeApply() {
-    $('apply-modal').hidden = true;
+  function closeModal() {
+    if (!openModalEl) return;
+    openModalEl.hidden = true;
+    openModalEl = null;
     document.body.classList.remove('no-scroll');
     if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function openApply(id) {
+    $('apply-plan').innerHTML = planLabel(id);
+    $('apply-price').innerHTML = planPrice(id);
+    openModal('apply-modal');
   }
 
   /* ---------- ふりがな ---------- */
@@ -450,23 +451,25 @@
       var b = e.target.closest('.demo-field-btn');
       if (b) showQuestion(b.getAttribute('data-field'), 0);
     });
-    $('q-check').addEventListener('click', checkAnswer);
     $('q-next').addEventListener('click', nextQuestion);
 
     document.addEventListener('click', function (e) {
-      var a = e.target.closest('[data-apply]');
-      if (!a) return;
-      var id = a.getAttribute('data-apply');
-      if (id === 'select') id = $('plan-select').value;
-      openApply(id);
-    });
-    $('apply-close').addEventListener('click', closeApply);
-    $('apply-back').addEventListener('click', closeApply);
-    $('apply-modal').addEventListener('click', function (e) {
-      if (e.target === $('apply-modal')) closeApply();
+      var t = e.target;
+      var a = t.closest('[data-apply]');
+      if (a) {
+        var id = a.getAttribute('data-apply');
+        if (id === 'select') id = $('plan-select').value;
+        openApply(id);
+        return;
+      }
+      var o = t.closest('[data-open]');
+      if (o) { openModal(o.getAttribute('data-open')); return; }
+      var d = t.closest('[data-doc]');
+      if (d) { $('doc-title').textContent = d.getAttribute('data-doc'); openModal('doc-modal'); return; }
+      if (t.closest('[data-close]') || (openModalEl && t === openModalEl)) closeModal();
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !$('apply-modal').hidden) closeApply();
+      if (e.key === 'Escape') closeModal();
     });
 
     initReveal();

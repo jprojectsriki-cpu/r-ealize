@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/lp.css?v=20261119a">
+  <link rel="stylesheet" href="css/lp.css?v=20261119b">
 </head>
 <body id="top">
 
@@ -28,7 +28,7 @@
   <div id="apply-modal" class="modal" hidden>
     <div class="modal-card light box" role="dialog" aria-modal="true" aria-labelledby="apply-title">
       <div class="modal-ribbon en">APPLY // <ruby>申込<rt>もうしこみ</rt></ruby></div>
-      <button type="button" id="apply-close" class="modal-close" aria-label="閉じる">✕</button>
+      <button type="button" id="apply-close" class="modal-close" data-close aria-label="閉じる">✕</button>
       <h3 id="apply-title" class="modal-title"><ruby>受付<rt>うけつけ</rt></ruby>の<ruby>準備中<rt>じゅんびちゅう</rt></ruby>です</h3>
       <p class="modal-text">
         R-EALIZE は、いま<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みの<ruby>受付<rt>うけつけ</rt></ruby>を<ruby>準備<rt>じゅんび</rt></ruby>しています。<ruby>受付<rt>うけつけ</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>めるまで、もう<ruby>少<rt>すこ</rt></ruby>しお<ruby>待<rt>ま</rt></ruby>ちください。
@@ -43,8 +43,37 @@
         <a class="btn btn-red btn-clip" href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">
           <i class="fa-solid fa-envelope" aria-hidden="true"></i><span>お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせ</span>
         </a>
-        <button type="button" id="apply-back" class="btn btn-gray"><ruby>戻<rt>もど</rt></ruby>る</button>
+        <button type="button" id="apply-back" class="btn btn-gray" data-close><span><ruby>戻<rt>もど</rt></ruby>る</span></button>
       </div>
+    </div>
+  </div>
+
+  <!-- 特定商取引法に基づく表記 -->
+  <div id="law-modal" class="modal" hidden>
+    <div class="modal-card doc-card light" role="dialog" aria-modal="true" aria-labelledby="law-title">
+      <button type="button" class="modal-close" data-close aria-label="閉じる">✕</button>
+      <h3 id="law-title" class="modal-title"><ruby>特定<rt>とくてい</rt></ruby><ruby>商取引法<rt>しょうとりひきほう</rt></ruby>に<ruby>基<rt>もと</rt></ruby>づく<ruby>表記<rt>ひょうき</rt></ruby></h3>
+      <dl class="law">
+      <div><dt>販売事業者名</dt><dd>ReicherRick</dd></div>
+      <div><dt>代表者</dt><dd>中村 力</dd></div>
+      <div><dt>所在地</dt><dd>〒902-0062 沖縄県那覇市字松川362番地9　シティテラス松川402号</dd></div>
+      <div><dt>電話番号</dt><dd>080-9107-4916</dd></div>
+      <div><dt>販売価格</dt><dd>1分野 ¥5,000（税込）／4分野まとめて ¥18,000（税込）。どちらも買い切り・期限なし</dd></div>
+      <div><dt>お支払い方法</dt><dd>銀行振込のみ（振込手数料はお客様のご負担）</dd></div>
+      <div><dt>お支払い時期</dt><dd>お申し込みから7日以内</dd></div>
+      <div><dt>サービスの提供時期</dt><dd>入金を確認し、アカウントを発行した時点から、期限なくご利用いただけます。</dd></div>
+      <div><dt>返金</dt><dd>アカウント発行前は全額を返金します。発行後は、原則として返金できません。</dd></div>
+      <div><dt>お問い合わせ</dt><dd><a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">お問い合わせページ</a></dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <!-- 利用規約・プライバシーポリシー（準備中） -->
+  <div id="doc-modal" class="modal" hidden>
+    <div class="modal-card doc-card light" role="dialog" aria-modal="true" aria-labelledby="doc-title">
+      <button type="button" class="modal-close" data-close aria-label="閉じる">✕</button>
+      <h3 id="doc-title" class="modal-title"></h3>
+      <p class="modal-text"><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みの<ruby>受付<rt>うけつけ</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>めるまでに<ruby>掲載<rt>けいさい</rt></ruby>します。もう<ruby>少<rt>すこ</rt></ruby>しお<ruby>待<rt>ま</rt></ruby>ちください。</p>
     </div>
   </div>
 
@@ -115,7 +144,7 @@
           </h1>
 
           <p class="hero-lead">
-            <ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>・<ruby>現場<rt>げんば</rt></ruby>の<ruby>単語<rt>たんご</rt></ruby>カード・<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby>がそろった、<ruby>留学生<rt>りゅうがくせい</rt></ruby>のための<ruby>試験対策<rt>しけんたいさく</rt></ruby>システム。<br>
+            <ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>・<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby>・まちがい<ruby>復習<rt>ふくしゅう</rt></ruby>がそろった、<ruby>留学生<rt>りゅうがくせい</rt></ruby>のための<ruby>試験対策<rt>しけんたいさく</rt></ruby>システム。<br>
             <ruby>働<rt>はたら</rt></ruby>きたい<ruby>業界<rt>ぎょうかい</rt></ruby>の<ruby>技能評価試験<rt>ぎのうひょうかしけん</rt></ruby>に、<ruby>一<rt>いち</rt></ruby><ruby>回<rt>かい</rt></ruby>で<ruby>合格<rt>ごうかく</rt></ruby>しよう！
           </p>
 
@@ -228,7 +257,7 @@
       <div class="sec-head reveal">
         <span class="sec-en en">SYSTEM FEATURES</span>
         <h2 class="sec-title stroke-red"><ruby>合格<rt>ごうかく</rt></ruby>に<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>機能<rt>きのう</rt></ruby>を<br><span class="t-yellow">ひとつにまとめました！</span></h2>
-        <p class="sec-lead">6つの<ruby>機能<rt>きのう</rt></ruby>がつながって、<ruby>留学生<rt>りゅうがくせい</rt></ruby>でも<ruby>続<rt>つづ</rt></ruby>けやすい<ruby>学習<rt>がくしゅう</rt></ruby>をつくります。</p>
+        <p class="sec-lead">5つの<ruby>機能<rt>きのう</rt></ruby>がつながって、<ruby>留学生<rt>りゅうがくせい</rt></ruby>でも<ruby>続<rt>つづ</rt></ruby>けやすい<ruby>学習<rt>がくしゅう</rt></ruby>をつくります。</p>
       </div>
 
       <div class="feat-grid">
@@ -263,17 +292,7 @@
         </article>
 
         <article class="feat light box reveal">
-          <div class="feat-top"><span class="feat-no is-black en">FEATURE 04</span><i class="fa-solid fa-clone" aria-hidden="true"></i></div>
-          <h3><ruby>現場<rt>げんば</rt></ruby>の<ruby>単語<rt>たんご</rt></ruby>カード</h3>
-          <p><ruby>介護<rt>かいご</rt></ruby>・<ruby>清掃<rt>せいそう</rt></ruby>・ホテル・<ruby>工場<rt>こうじょう</rt></ruby>で<ruby>使<rt>つか</rt></ruby>う<ruby>言葉<rt>ことば</rt></ruby>を、カードでスキマ<ruby>時間<rt>じかん</rt></ruby>に<ruby>覚<rt>おぼ</rt></ruby>えられます。</p>
-          <ul>
-            <li><i class="fa-solid fa-star" aria-hidden="true"></i>「<ruby>覚<rt>おぼ</rt></ruby>えた」「もう<ruby>一度<rt>いちど</rt></ruby>」で<ruby>分<rt>わ</rt></ruby>けられる</li>
-            <li><i class="fa-solid fa-star" aria-hidden="true"></i><ruby>就職<rt>しゅうしょく</rt></ruby>したあとの<ruby>仕事<rt>しごと</rt></ruby>でも<ruby>役<rt>やく</rt></ruby>に<ruby>立<rt>た</rt></ruby>つ</li>
-          </ul>
-        </article>
-
-        <article class="feat light box reveal" style="transition-delay:150ms">
-          <div class="feat-top"><span class="feat-no en">FEATURE 05</span><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></div>
+          <div class="feat-top"><span class="feat-no is-black en">FEATURE 04</span><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></div>
           <h3>まちがい<ruby>復習<rt>ふくしゅう</rt></ruby>リスト</h3>
           <p>まちがえた<ruby>問題<rt>もんだい</rt></ruby>は<ruby>自動<rt>じどう</rt></ruby>でリストに<ruby>入<rt>はい</rt></ruby>ります。<ruby>苦手<rt>にがて</rt></ruby>なところだけを、くり<ruby>返<rt>かえ</rt></ruby>し<ruby>解<rt>と</rt></ruby>き<ruby>直<rt>なお</rt></ruby>せます。</p>
           <ul>
@@ -282,8 +301,8 @@
           </ul>
         </article>
 
-        <article class="feat light box reveal" style="transition-delay:300ms">
-          <div class="feat-top"><span class="feat-no is-black en">FEATURE 06</span><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></div>
+        <article class="feat light box reveal" style="transition-delay:150ms">
+          <div class="feat-top"><span class="feat-no en">FEATURE 05</span><i class="fa-solid fa-chart-pie" aria-hidden="true"></i></div>
           <h3><ruby>正答率<rt>せいとうりつ</rt></ruby>・<ruby>学習<rt>がくしゅう</rt></ruby>の<ruby>記録<rt>きろく</rt></ruby></h3>
           <p><ruby>毎日<rt>まいにち</rt></ruby>の<ruby>学習<rt>がくしゅう</rt></ruby>や、<ruby>分野<rt>ぶんや</rt></ruby>ごとの<ruby>正答率<rt>せいとうりつ</rt></ruby>をグラフで<ruby>見<rt>み</rt></ruby>られます。<ruby>合格<rt>ごうかく</rt></ruby>までのきょりが、ひと<ruby>目<rt>め</rt></ruby>でわかります。</p>
           <ul>
@@ -301,7 +320,7 @@
         <div class="sec-head reveal">
           <span class="sec-en en t-yellow">FREE DEMO // <ruby>無料<rt>むりょう</rt></ruby><ruby>体験<rt>たいけん</rt></ruby></span>
           <h2 class="sec-title stroke-red">4<ruby>分野<rt>ぶんや</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>を<span class="t-yellow"><ruby>体験<rt>たいけん</rt></ruby>してみよう！</span></h2>
-          <p class="sec-lead"><ruby>下<rt>した</rt></ruby>のボタンで<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んで、サンプル<ruby>問題<rt>もんだい</rt></ruby>にチャレンジしてください（<ruby>各<rt>かく</rt></ruby><ruby>分野<rt>ぶんや</rt></ruby>3<ruby>問<rt>もん</rt></ruby>）。</p>
+          <p class="sec-lead"><ruby>下<rt>した</rt></ruby>のボタンで<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んで、サンプル<ruby>問題<rt>もんだい</rt></ruby>にチャレンジしてください（<ruby>各<rt>かく</rt></ruby><ruby>分野<rt>ぶんや</rt></ruby>3<ruby>問<rt>もん</rt></ruby>）。<ruby>答<rt>こた</rt></ruby>えを<ruby>選<rt>えら</rt></ruby>ぶと、すぐに<ruby>正解<rt>せいかい</rt></ruby>がわかります。</p>
         </div>
 
         <div id="demo-fields" class="demo-fields reveal" style="transition-delay:150ms"></div>
@@ -324,23 +343,16 @@
 
           <div id="q-choices" class="demo-choices"></div>
 
-          <div class="demo-bar">
-            <div class="demo-sel">
-              <span class="demo-sel-tag"><ruby>選択中<rt>せんたくちゅう</rt></ruby></span>
-              <span id="q-selected" class="demo-sel-text"></span>
-            </div>
-            <div class="demo-btns">
-              <button type="button" id="q-check" class="btn btn-red btn-clip"><i class="fa-solid fa-check" aria-hidden="true"></i><span><ruby>答<rt>こた</rt></ruby>えを<ruby>決<rt>き</rt></ruby>める</span></button>
-              <button type="button" id="q-next" class="btn btn-black"></button>
-            </div>
-          </div>
-
           <div id="q-exp" class="demo-exp dark" hidden aria-live="polite">
             <div class="demo-exp-head">
               <span id="q-result" class="result-badge en">RESULT</span>
               <h3>やさしい<ruby>解説<rt>かいせつ</rt></ruby></h3>
             </div>
             <p id="q-exp-text"></p>
+          </div>
+
+          <div class="demo-bar">
+            <button type="button" id="q-next" class="btn btn-black"></button>
           </div>
         </div>
       </div>
@@ -441,6 +453,11 @@
               <span class="plan-yen">¥</span><span class="plan-num en">5,000</span>
               <span class="plan-note">（<ruby>税込<rt>ぜいこみ</rt></ruby>・<ruby>期限<rt>きげん</rt></ruby>なし）</span>
             </div>
+            <ul class="plan-inc">
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i><span><ruby>選<rt>えら</rt></ruby>んだ<ruby>分野<rt>ぶんや</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>（ぜんぶのSTAGE）</span></li>
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i><span><ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby></span></li>
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>まちがい<ruby>復習<rt>ふくしゅう</rt></ruby>・<ruby>成績<rt>せいせき</rt></ruby>のグラフ</span></li>
+            </ul>
             <label for="plan-select" class="plan-label"><ruby>分野<rt>ぶんや</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぶ</label>
             <select id="plan-select" class="plan-select">
               <option value="kaigo">介護</option>
@@ -462,6 +479,11 @@
               <span class="plan-note">（<ruby>税込<rt>ぜいこみ</rt></ruby>・<ruby>期限<rt>きげん</rt></ruby>なし）</span>
             </div>
             <p class="plan-save">4<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>別々<rt>べつべつ</rt></ruby>に<ruby>買<rt>か</rt></ruby>うと ¥20,000 → <b>¥2,000 おトク</b></p>
+            <ul class="plan-inc">
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>4<ruby>分野<rt>ぶんや</rt></ruby>ぜんぶの<ruby>問題<rt>もんだい</rt></ruby>（ぜんぶのSTAGE）</span></li>
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i><span><ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby></span></li>
+              <li><i class="fa-solid fa-check" aria-hidden="true"></i><span>まちがい<ruby>復習<rt>ふくしゅう</rt></ruby>・<ruby>成績<rt>せいせき</rt></ruby>のグラフ</span></li>
+            </ul>
             <p class="plan-fields"><ruby>介護<rt>かいご</rt></ruby>・ビルクリーニング・<ruby>宿泊<rt>しゅくはく</rt></ruby>・<ruby>工業製品製造業<rt>こうぎょうせいひんせいぞうぎょう</rt></ruby></p>
             <button type="button" class="btn btn-yellow btn-clip btn-block" data-apply="all">
               <i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>4<ruby>分野<rt>ぶんや</rt></ruby>まとめて<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</span>
@@ -469,12 +491,6 @@
           </div>
         </div>
 
-        <ul class="plan-includes reveal">
-          <li><i class="fa-solid fa-check" aria-hidden="true"></i><ruby>分野<rt>ぶんや</rt></ruby>ごとの<ruby>問題<rt>もんだい</rt></ruby>（ぜんぶのSTAGE）</li>
-          <li><i class="fa-solid fa-check" aria-hidden="true"></i><ruby>本番<rt>ほんばん</rt></ruby>と<ruby>同<rt>おな</rt></ruby>じ<ruby>形式<rt>けいしき</rt></ruby>の<ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby></li>
-          <li><i class="fa-solid fa-check" aria-hidden="true"></i>ふりがなつきの<ruby>単語<rt>たんご</rt></ruby>カード</li>
-          <li><i class="fa-solid fa-check" aria-hidden="true"></i>まちがい<ruby>復習<rt>ふくしゅう</rt></ruby>・<ruby>成績<rt>せいせき</rt></ruby>のグラフ</li>
-        </ul>
         <p class="plan-small">※ お<ruby>支払<rt>しはら</rt></ruby>いは<ruby>銀行<rt>ぎんこう</rt></ruby><ruby>振込<rt>ふりこみ</rt></ruby>だけです。1<ruby>分野<rt>ぶんや</rt></ruby>プランを<ruby>買<rt>か</rt></ruby>ったあとで、ほかの<ruby>分野<rt>ぶんや</rt></ruby>を<ruby>追加<rt>ついか</rt></ruby>で<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>むこともできます。</p>
       </div>
     </section>
@@ -486,7 +502,7 @@
         <h2 class="sec-title stroke-red"><ruby>留学生<rt>りゅうがくせい</rt></ruby>からの<span class="t-yellow">よくある<ruby>質問<rt>しつもん</rt></ruby></span></h2>
       </div>
       <div class="faq-list">
-        <details class="faq dark reveal" open>
+        <details class="faq dark reveal">
           <summary><span><span class="faq-q en">Q1.</span><ruby>漢字<rt>かんじ</rt></ruby>が<ruby>苦手<rt>にがて</rt></ruby>でも<ruby>勉強<rt>べんきょう</rt></ruby>できますか？</span><span class="faq-plus" aria-hidden="true">＋</span></summary>
           <p>はい、<ruby>大丈夫<rt>だいじょうぶ</rt></ruby>です！<ruby>画面<rt>がめん</rt></ruby>の<ruby>右上<rt>みぎうえ</rt></ruby>の「ふりがな」をONにすると、<ruby>問題<rt>もんだい</rt></ruby>・<ruby>選択肢<rt>せんたくし</rt></ruby>・<ruby>解説<rt>かいせつ</rt></ruby>にふりがなが<ruby>出<rt>で</rt></ruby>ます。<ruby>本番<rt>ほんばん</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>はOFFにして<ruby>練習<rt>れんしゅう</rt></ruby>することもできます。</p>
         </details>
@@ -505,48 +521,49 @@
       </div>
     </section>
 
-    <!-- 10. 特定商取引法に基づく表記 -->
-    <section id="law" class="sec container law-sec">
-      <div class="sec-head reveal">
-        <span class="sec-en en">LEGAL NOTICE</span>
-        <h2 class="sec-title sec-title-sm">特定商取引法に基づく表記</h2>
-      </div>
-      <dl class="law light reveal">
-        <div><dt>販売事業者名</dt><dd>ReicherRick</dd></div>
-        <div><dt>代表者</dt><dd>中村 力</dd></div>
-        <div><dt>所在地</dt><dd>〒902-0062 沖縄県那覇市字松川362番地9　シティテラス松川402号</dd></div>
-        <div><dt>電話番号</dt><dd>080-9107-4916</dd></div>
-        <div><dt>販売価格</dt><dd>1分野 ¥5,000（税込）／4分野まとめて ¥18,000（税込）。どちらも買い切り・期限なし</dd></div>
-        <div><dt>お支払い方法</dt><dd>銀行振込のみ（振込手数料はお客様のご負担）</dd></div>
-        <div><dt>お支払い時期</dt><dd>お申し込みから7日以内</dd></div>
-        <div><dt>サービスの提供時期</dt><dd>入金を確認し、アカウントを発行した時点から、期限なくご利用いただけます。</dd></div>
-        <div><dt>返金</dt><dd>アカウント発行前は全額を返金します。発行後は、原則として返金できません。</dd></div>
-        <div><dt>お問い合わせ</dt><dd><a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">お問い合わせページ</a></dd></div>
-      </dl>
-    </section>
-
   </main>
 
-  <footer class="ft">
-    <div class="ft-in container">
-      <div class="ft-brand">
-        <div class="ft-name"><span class="en">R-EALIZE</span><ruby>留学生<rt>りゅうがくせい</rt></ruby>向け <ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby> <ruby>試験対策<rt>しけんたいさく</rt></ruby>システム</div>
-        <p><ruby>対応<rt>たいおう</rt></ruby>4<ruby>分野<rt>ぶんや</rt></ruby>：<ruby>介護<rt>かいご</rt></ruby>・ビルクリーニング・<ruby>宿泊<rt>しゅくはく</rt></ruby>・<ruby>工業製品製造業<rt>こうぎょうせいひんせいぞうぎょう</rt></ruby>（1<ruby>分野<rt>ぶんや</rt></ruby> ¥5,000・4<ruby>分野<rt>ぶんや</rt></ruby>まとめて ¥18,000、<ruby>税込<rt>ぜいこみ</rt></ruby>）</p>
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="logo-mark en">SSW1</span>
+            <span class="brand-name en">R-EALIZE</span>
+          </div>
+          <p><ruby>留学生<rt>りゅうがくせい</rt></ruby>のための<ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby><ruby>試験対策<rt>しけんたいさく</rt></ruby>システム。<ruby>介護<rt>かいご</rt></ruby>・ビルクリーニング・<ruby>宿泊<rt>しゅくはく</rt></ruby>・<ruby>工業製品製造業<rt>こうぎょうせいひんせいぞうぎょう</rt></ruby>の4<ruby>分野<rt>ぶんや</rt></ruby>に<ruby>対応<rt>たいおう</rt></ruby>。</p>
+          <a class="footer-series" href="https://jprojectsriki-cpu.github.io/rikis_collection/"><span>R-シリーズ<ruby>一覧<rt>いちらん</rt></ruby>へ</span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="footer-col">
+          <p class="footer-head en">R-EALIZE</p>
+          <ul>
+            <li><a href="#features"><ruby>特長<rt>とくちょう</rt></ruby></a></li>
+            <li><a href="#demo"><ruby>体験<rt>たいけん</rt></ruby>デモ</a></li>
+            <li><a href="#fields">4<ruby>分野<rt>ぶんや</rt></ruby></a></li>
+            <li><a href="#pricing"><ruby>料金<rt>りょうきん</rt></ruby></a></li>
+            <li><a href="#faq">よくある<ruby>質問<rt>しつもん</rt></ruby></a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-head">アカウント</p>
+          <ul>
+            <li><a href="#pricing"><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <p class="footer-head">サポート</p>
+          <ul>
+            <li><button type="button" data-doc="利用規約"><ruby>利用<rt>りよう</rt></ruby><ruby>規約<rt>きやく</rt></ruby></button></li>
+            <li><button type="button" data-doc="プライバシーポリシー">プライバシーポリシー</button></li>
+            <li><button type="button" data-open="law-modal"><ruby>特定<rt>とくてい</rt></ruby><ruby>商取引法<rt>しょうとりひきほう</rt></ruby>に<ruby>基<rt>もと</rt></ruby>づく<ruby>表記<rt>ひょうき</rt></ruby></button></li>
+            <li><a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact">お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせ</a></li>
+          </ul>
+        </div>
       </div>
-      <nav class="ft-nav" aria-label="フッターメニュー">
-        <a href="#features"><ruby>特長<rt>とくちょう</rt></ruby></a>
-        <a href="#demo"><ruby>体験<rt>たいけん</rt></ruby>デモ</a>
-        <a href="#fields">4<ruby>分野<rt>ぶんや</rt></ruby></a>
-        <a href="#pricing"><ruby>料金<rt>りょうきん</rt></ruby></a>
-        <a href="#faq">Q&amp;A</a>
-        <a href="#law">特定商取引法に基づく表記</a>
-        <a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせ</a>
-        <a href="https://jprojectsriki-cpu.github.io/rikis_collection/">R-SERIES <ruby>一覧<rt>いちらん</rt></ruby>へ</a>
-      </nav>
+      <p class="copyright">© 2026 R-EALIZE / ReicherRick. All rights reserved.</p>
     </div>
-    <p class="ft-copy">© 2026 R-EALIZE / ReicherRick. All rights reserved.</p>
   </footer>
 
-  <script src="js/lp.js?v=20261119a"></script>
+  <script src="js/lp.js?v=20261119b"></script>
 </body>
 </html>
