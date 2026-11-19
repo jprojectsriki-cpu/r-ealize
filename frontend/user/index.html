@@ -10,7 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/lp.css?v=20261119b">
+  <link rel="stylesheet" href="css/lp.css?v=20261119c">
+  <link rel="stylesheet" href="css/auth.css?v=20261119c">
 </head>
 <body id="top">
 
@@ -48,6 +49,52 @@
     </div>
   </div>
 
+  <!-- 申込フォーム（config.js の APPLY_OPEN が true のとき） -->
+  <div id="applyform-modal" class="modal" hidden>
+    <div class="modal-card apply-card light box" role="dialog" aria-modal="true" aria-labelledby="applyform-title">
+      <div class="modal-ribbon en">APPLY // <ruby>申込<rt>もうしこみ</rt></ruby></div>
+      <button type="button" class="modal-close" data-close aria-label="閉じる">✕</button>
+      <h3 id="applyform-title" class="modal-title">お<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>み</h3>
+
+      <div id="applyDone" class="apply-done" hidden></div>
+
+      <form id="applyForm" novalidate>
+        <fieldset class="apply-group">
+          <legend><span class="step-no">01</span><span><ruby>分野<rt>ぶんや</rt></ruby></span></legend>
+          <div class="plan-radios">
+            <label><input type="radio" name="plan" value="kaigo" checked><span><span><ruby>介護<rt>かいご</rt></ruby></span><b>¥5,000</b></span></label>
+            <label><input type="radio" name="plan" value="building"><span><span>ビルクリーニング</span><b>¥5,000</b></span></label>
+            <label><input type="radio" name="plan" value="accommodation"><span><span><ruby>宿泊<rt>しゅくはく</rt></ruby></span><b>¥5,000</b></span></label>
+            <label><input type="radio" name="plan" value="manufacturing"><span><span><ruby>工業製品製造業<rt>こうぎょうせいひんせいぞうぎょう</rt></ruby></span><b>¥5,000</b></span></label>
+            <label class="is-bundle"><input type="radio" name="plan" value="all"><span><span>4<ruby>分野<rt>ぶんや</rt></ruby>まとめて</span><b>¥18,000</b></span></label>
+          </div>
+          <p class="note-small"><ruby>税込<rt>ぜいこみ</rt></ruby>・<ruby>買<rt>か</rt></ruby>い<ruby>切<rt>き</rt></ruby>り・<ruby>期限<rt>きげん</rt></ruby>なし</p>
+        </fieldset>
+
+        <fieldset class="apply-group">
+          <legend><span class="step-no">02</span><span>お<ruby>支払<rt>しはら</rt></ruby>い<ruby>方法<rt>ほうほう</rt></ruby></span></legend>
+          <div class="pay-fixed"><i class="fa-solid fa-building-columns" aria-hidden="true"></i><span><ruby>銀行<rt>ぎんこう</rt></ruby><ruby>振込<rt>ふりこみ</rt></ruby></span></div>
+          <p class="note-small">※ お<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みのあと、<ruby>振込先<rt>ふりこみさき</rt></ruby>の<ruby>口座<rt>こうざ</rt></ruby>をメールでお<ruby>知<rt>し</rt></ruby>らせします。お<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みから<ruby>7日<rt>なのか</rt></ruby><ruby>以内<rt>いない</rt></ruby>にお<ruby>振<rt>ふ</rt></ruby>り<ruby>込<rt>こ</rt></ruby>みください。<ruby>振込<rt>ふりこみ</rt></ruby><ruby>手数料<rt>てすうりょう</rt></ruby>はお<ruby>客様<rt>きゃくさま</rt></ruby>のご<ruby>負担<rt>ふたん</rt></ruby>です。</p>
+        </fieldset>
+
+        <fieldset class="apply-group">
+          <legend><span class="step-no">03</span><span>アカウントの<ruby>情報<rt>じょうほう</rt></ruby></span></legend>
+          <label class="field"><span>お<ruby>名前<rt>なまえ</rt></ruby></span><input type="text" name="name" maxlength="50" autocomplete="name" required></label>
+          <label class="field"><span>メールアドレス</span><input type="email" name="email" maxlength="200" autocomplete="email" required></label>
+          <label class="field"><span>パスワード（8〜64<ruby>文字<rt>もじ</rt></ruby>）</span>
+            <span class="pw-wrap"><input type="password" name="password" minlength="8" maxlength="64" autocomplete="new-password" required><button type="button" class="pw-toggle" data-pw-toggle aria-pressed="false"><span><ruby>表示<rt>ひょうじ</rt></ruby></span></button></span>
+          </label>
+          <label class="field"><span>パスワード（<ruby>確認<rt>かくにん</rt></ruby>）</span><input type="password" name="passwordConfirm" minlength="8" maxlength="64" autocomplete="new-password" required></label>
+          <div class="hp" aria-hidden="true"><label>website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <label class="agree"><input type="checkbox" name="agree" required><span><button type="button" class="link-btn" data-open="terms-modal"><ruby>利用<rt>りよう</rt></ruby><ruby>規約<rt>きやく</rt></ruby></button>と<button type="button" class="link-btn" data-open="privacy-modal">プライバシーポリシー</button>に<ruby>同意<rt>どうい</rt></ruby>する</span></label>
+        </fieldset>
+
+        <p class="form-msg" id="applyMsg" role="status" aria-live="polite"></p>
+        <button type="submit" class="btn btn-red btn-clip btn-block btn-lg"><span>この<ruby>内容<rt>ないよう</rt></ruby>で<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>む</span><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></button>
+      </form>
+    </div>
+  </div>
+
   <!-- 特定商取引法に基づく表記 -->
   <div id="law-modal" class="modal" hidden>
     <div class="modal-card doc-card light" role="dialog" aria-modal="true" aria-labelledby="law-title">
@@ -68,12 +115,106 @@
     </div>
   </div>
 
-  <!-- 利用規約・プライバシーポリシー（準備中） -->
-  <div id="doc-modal" class="modal" hidden>
-    <div class="modal-card doc-card light" role="dialog" aria-modal="true" aria-labelledby="doc-title">
+  <!-- 利用規約 -->
+  <div id="terms-modal" class="modal" hidden>
+    <div class="modal-card doc-card light" role="dialog" aria-modal="true" aria-labelledby="terms-title">
       <button type="button" class="modal-close" data-close aria-label="閉じる">✕</button>
-      <h3 id="doc-title" class="modal-title"></h3>
-      <p class="modal-text"><ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みの<ruby>受付<rt>うけつけ</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>めるまでに<ruby>掲載<rt>けいさい</rt></ruby>します。もう<ruby>少<rt>すこ</rt></ruby>しお<ruby>待<rt>ま</rt></ruby>ちください。</p>
+      <h3 id="terms-title" class="modal-title"><ruby>利用<rt>りよう</rt></ruby><ruby>規約<rt>きやく</rt></ruby></h3>
+      <div class="doc-body">
+        <p>この利用規約（以下「本規約」といいます。）は、ReicherRick（以下「当方」といいます。）が提供する特定技能1号の試験対策サービス「R-EALIZE」（以下「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆様（以下「ユーザー」といいます。）には、本規約に従って本サービスをご利用いただきます。</p>
+        <h4>第1条（適用）</h4>
+        <ol>
+          <li>本規約は、ユーザーと当方との間の本サービスの利用に関わる一切の関係に適用されるものとします。</li>
+          <li>当方は本サービスに関し、本規約のほか、ご利用にあたってのルール等、各種の規定（以下「個別規定」といいます。）をすることがあります。これら個別規定はその名称のいかんに関わらず、本規約の一部を構成するものとします。</li>
+        </ol>
+        <h4>第2条（利用登録）</h4>
+        <ol>
+          <li>本サービスにおいては、登録希望者が本規約に同意の上、当方の定める方法によって利用登録を申請し、当方がこれを承認することによって、利用登録が完了するものとします。</li>
+          <li>当方は、利用登録の申請者に以下の事由があると判断した場合、利用登録の申請を承認しないことがあり、その理由については一切の開示義務を負わないものとします。
+            <ul>
+              <li>利用登録の申請に際して虚偽の事項を届け出た場合</li>
+              <li>本規約に違反したことがある者からの申請である場合</li>
+              <li>その他、当方が利用登録を相当でないと判断した場合</li>
+            </ul>
+          </li>
+        </ol>
+        <h4>第3条（ユーザーIDおよびパスワードの管理）</h4>
+        <ol>
+          <li>ユーザーは、自己の責任において、本サービスのユーザーIDおよびパスワードを適切に管理するものとします。</li>
+          <li>ユーザーは、いかなる場合にも、ユーザーIDおよびパスワードを第三者に譲渡または貸与し、もしくは第三者と共用することはできません。</li>
+        </ol>
+        <h4>第4条（利用料金および支払方法）</h4>
+        <ol>
+          <li>ユーザーは、本サービスの有料対価として、当方が別途定め本ウェブサイトに表示する分野ごとの利用料金（1分野 5,000円、4分野まとめて 18,000円。いずれも税込）を、当方が指定する方法（銀行振込）により支払うものとします。振込手数料はユーザーの負担とします。</li>
+          <li>お申し込みから7日以内に入金を確認できない場合、お申し込みは自動的に取り消されます。</li>
+          <li>利用期間の定めはありません。当方が入金を確認し、アカウントを発行した日から、お申し込みの分野を期限なく利用できます。更新の利用料金はありません。</li>
+        </ol>
+        <h4>第5条（返金）</h4>
+        <ol>
+          <li>アカウントを発行する前であれば、お支払いいただいた利用料金の全額を返金します。</li>
+          <li>アカウントを発行したあとは、原則として返金しません。</li>
+        </ol>
+        <h4>第6条（禁止事項）</h4>
+        <p>ユーザーは、本サービスの利用にあたり、以下の行為をしてはなりません。</p>
+        <ul>
+          <li>法令または公序良俗に違反する行為</li>
+          <li>犯罪行為に関連する行為</li>
+          <li>当方のサーバーまたはネットワークの機能を破壊したり、妨害したりする行為</li>
+          <li>当方のサービスの運営を妨害するおそれのある行為</li>
+          <li>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
+          <li>不正アクセスをし、またはこれを試みる行為</li>
+          <li>本サービスのコンテンツ（教材データ等）を無断で転載、複製、配布する行為</li>
+        </ul>
+        <h4>第7条（免責事項・サービス変更・終了）</h4>
+        <ol>
+          <li>当方は、本サービスに事実上または法律上の瑕疵（安全性、信頼性、正確性、完全性、有効性、特定の目的への適合性、セキュリティ等に関する欠陥、エラーやバグ、権利侵害等を含みます。）がないことを明示的にも黙示的にも保証しておりません。</li>
+          <li>当方は、ユーザーに通知することなく、本サービスの内容を変更しまたは本サービスの提供を中止することができるものとし、これによってユーザーに生じた損害について一切の責任を負いません。</li>
+          <li>本サービスは学習を支援するものであり、特定技能1号評価試験の合格を保証するものではありません。</li>
+        </ol>
+        <p class="doc-date">制定日：2026年11月19日</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- プライバシーポリシー -->
+  <div id="privacy-modal" class="modal" hidden>
+    <div class="modal-card doc-card light" role="dialog" aria-modal="true" aria-labelledby="privacy-title">
+      <button type="button" class="modal-close" data-close aria-label="閉じる">✕</button>
+      <h3 id="privacy-title" class="modal-title">プライバシーポリシー</h3>
+      <div class="doc-body">
+        <p>ReicherRick（以下「当方」といいます。）は、本ウェブサイト上で提供するサービス「R-EALIZE」（以下「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下「本ポリシー」といいます。）を定め、適切な保護に努めます。</p>
+        <h4>第1条（収集する個人情報）</h4>
+        <ul>
+          <li>ユーザー識別情報：お名前、メールアドレス、パスワード（ハッシュ化して保存し、元のパスワードは保存しません）</li>
+          <li>決済関連情報：お支払いの状況（入金の有無・入金日。当方はお客様の口座番号などの口座情報を保存しません）</li>
+          <li>利用履歴情報：学習の進み具合などの学習データ</li>
+        </ul>
+        <h4>第2条（個人情報の利用目的）</h4>
+        <ul>
+          <li>本サービスの提供・運営のため</li>
+          <li>ユーザーからの問い合わせに回答するため（本人確認を行うことを含む）</li>
+          <li>利用料金の請求および入金確認のため</li>
+          <li>アカウント発行や重要なお知らせのメールを送付するため</li>
+          <li>利用規約に違反したユーザーの特定や、不正利用を防止するため</li>
+        </ul>
+        <p>当方は、ユーザーが入力した内容を、AI の学習には使いません。</p>
+        <h4>第3条（個人情報の第三者提供）</h4>
+        <p>当方は、次に掲げる場合を除いて、あらかじめユーザーの同意を得ることなく、第三者に個人情報を提供することはありません。</p>
+        <ul>
+          <li>法令に基づく場合</li>
+          <li>人の生命、身体または財産の保護のために必要がある場合であって、本人の同意を得ることが困難であるとき</li>
+          <li>国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合</li>
+        </ul>
+        <h4>第4条（外部サービスの利用）</h4>
+        <p>データの保存およびメールの送信に、Googleのサービス（Google スプレッドシート／Apps Script）を利用しています。</p>
+        <h4>第5条（安全管理措置）</h4>
+        <p>当方は、個人情報の紛失、破壊、改ざんおよび漏洩などを防止するため、適切な情報セキュリティ対策を講じます。</p>
+        <h4>第6条（個人情報の開示・訂正・削除）</h4>
+        <p>ユーザーは、当方の保有する自己の個人情報について、当方が定める手続きにより、開示、訂正、追加または削除を請求することができます。</p>
+        <h4>第7条（お問い合わせ窓口）</h4>
+        <p>本ポリシーに関するお問い合わせは、<a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact" target="_blank" rel="noopener">お問い合わせフォーム</a>よりお願いいたします。</p>
+        <p class="doc-date">制定日：2026年11月19日</p>
+      </div>
     </div>
   </div>
 
@@ -553,8 +694,8 @@
         <div class="footer-col">
           <p class="footer-head">サポート</p>
           <ul>
-            <li><button type="button" data-doc="利用規約"><ruby>利用<rt>りよう</rt></ruby><ruby>規約<rt>きやく</rt></ruby></button></li>
-            <li><button type="button" data-doc="プライバシーポリシー">プライバシーポリシー</button></li>
+            <li><button type="button" data-open="terms-modal"><ruby>利用<rt>りよう</rt></ruby><ruby>規約<rt>きやく</rt></ruby></button></li>
+            <li><button type="button" data-open="privacy-modal">プライバシーポリシー</button></li>
             <li><button type="button" data-open="law-modal"><ruby>特定<rt>とくてい</rt></ruby><ruby>商取引法<rt>しょうとりひきほう</rt></ruby>に<ruby>基<rt>もと</rt></ruby>づく<ruby>表記<rt>ひょうき</rt></ruby></button></li>
             <li><a href="https://jprojectsriki-cpu.github.io/rikis_collection/#contact">お<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせ</a></li>
           </ul>
@@ -564,6 +705,8 @@
     </div>
   </footer>
 
-  <script src="js/lp.js?v=20261119b"></script>
+  <script src="js/config.js?v=20261119c"></script>
+  <script src="js/common.js?v=20261119c"></script>
+  <script src="js/lp.js?v=20261119c"></script>
 </body>
 </html>

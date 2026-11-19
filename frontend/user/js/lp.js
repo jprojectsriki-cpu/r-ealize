@@ -360,7 +360,6 @@
   }
 
   /* ---------- 申込（準備中のお知らせ） ---------- */
-  var lastFocus = null;
   function planLabel(id) {
     if (id === 'all') return '4' + r('分野', 'ぶんや') + 'まとめて（' + FIELDS.map(function (f) { return f.name; }).join('・') + '）';
     var f = FIELDS.find(function (x) { return x.id === id; });
@@ -369,28 +368,99 @@
   function planPrice(id) {
     return id === 'all' ? '¥18,000（' + r('税込', 'ぜいこみ') + '）' : '¥5,000（' + r('税込', 'ぜいこみ') + '）';
   }
-  var openModalEl = null;
+  // モーダルは重ねて開ける（申込フォームの上に利用規約を開く、など）。閉じると1つ前にもどる
+  var stack = [];
+  function topModal() { return stack.length ? stack[stack.length - 1].el : null; }
   function openModal(id) {
-    if (openModalEl) closeModal();
-    lastFocus = document.activeElement;
     var m = $(id);
+    if (!m || topModal() === m) return;
+    stack.push({ el: m, focus: document.activeElement });
+    m.style.zIndex = String(60 + stack.length);
     m.hidden = false;
-    openModalEl = m;
     document.body.classList.add('no-scroll');
     var c = m.querySelector('.modal-close');
     if (c) c.focus();
   }
   function closeModal() {
-    if (!openModalEl) return;
-    openModalEl.hidden = true;
-    openModalEl = null;
-    document.body.classList.remove('no-scroll');
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    var top = stack.pop();
+    if (!top) return;
+    top.el.hidden = true;
+    top.el.style.zIndex = '';
+    if (!stack.length) document.body.classList.remove('no-scroll');
+    if (top.focus && top.focus.focus) top.focus.focus();
+  }
+  function applyOpen() {
+    var c = window.REALIZE_CONFIG || {};
+    return c.APPLY_OPEN === true && /^https:\/\//.test(c.API_URL || '');
   }
   function openApply(id) {
+    if (applyOpen()) {
+      var radio = document.querySelector('#applyForm input[name="plan"][value="' + id + '"]');
+      if (radio) radio.checked = true;
+      $('applyDone').hidden = true;
+      $('applyForm').hidden = false;
+      setApplyMsg('');
+      openModal('applyform-modal');
+      return;
+    }
     $('apply-plan').innerHTML = planLabel(id);
     $('apply-price').innerHTML = planPrice(id);
     openModal('apply-modal');
+  }
+
+  /* ---------- 申込フォーム（R-ANGUAGE と同じ項目） ---------- */
+  function setApplyMsg(text, isError) {
+    var el = $('applyMsg');
+    el.textContent = text || '';
+    el.classList.toggle('is-error', !!isError);
+  }
+  function initApplyForm() {
+    var form = $('applyForm');
+    if (!form) return;
+    form.querySelectorAll('[data-pw-toggle]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var input = b.parentNode.querySelector('input');
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        b.setAttribute('aria-pressed', String(show));
+      });
+    });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var f = form.elements;
+      var pw = f.password.value;
+      if (!f.name.value.trim()) return setApplyMsg('お名前を入力してください。', true);
+      if (!f.email.value.trim() || !f.email.checkValidity()) return setApplyMsg('メールアドレスを確認してください。', true);
+      if (pw.length < 8 || pw.length > 64) return setApplyMsg('パスワードは8〜64文字で入力してください。', true);
+      if (pw !== f.passwordConfirm.value) return setApplyMsg('パスワード（確認）が一致しません。', true);
+      if (!f.agree.checked) return setApplyMsg('利用規約とプライバシーポリシーへの同意が必要です。', true);
+      if (!applyOpen() || !window.RZ) return setApplyMsg('現在、お申し込みの受付を準備中です。', true);
+
+      var btn = form.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      setApplyMsg('');
+      RZ.loading('お' + r('申', 'もう') + 'し' + r('込', 'こ') + 'みを' + r('送', 'おく') + 'っています', RZ.api({
+        action: 'apply',
+        plan: (form.querySelector('input[name="plan"]:checked') || {}).value,
+        name: f.name.value.trim(),
+        email: f.email.value.trim(),
+        password: pw,
+        website: f.website.value
+      })).then(function (res) {
+        if (res && res.ok) {
+          form.reset();
+          form.hidden = true;
+          var done = $('applyDone');
+          done.textContent = 'お申し込みを受け付けました（申込番号：' + (res.applicationId || '—') + '）。確認のメールをお送りしましたので、メールに書かれた口座に、7日以内にお振り込みください。メールが届かないときは、迷惑メールのフォルダも確認してください。';
+          done.hidden = false;
+        } else {
+          setApplyMsg((res && res.message) || 'お申し込みに失敗しました。', true);
+        }
+      }).catch(function (err) {
+        console.error(err);
+        setApplyMsg('通信に失敗しました。時間をおいてもう一度お試しください。', true);
+      }).then(function () { btn.disabled = false; });
+    });
   }
 
   /* ---------- ふりがな ---------- */
@@ -463,15 +533,14 @@
         return;
       }
       var o = t.closest('[data-open]');
-      if (o) { openModal(o.getAttribute('data-open')); return; }
-      var d = t.closest('[data-doc]');
-      if (d) { $('doc-title').textContent = d.getAttribute('data-doc'); openModal('doc-modal'); return; }
-      if (t.closest('[data-close]') || (openModalEl && t === openModalEl)) closeModal();
+      if (o) { e.preventDefault(); openModal(o.getAttribute('data-open')); return; }
+      if (t.closest('[data-close]') || (topModal() && t === topModal())) closeModal();
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeModal();
     });
 
+    initApplyForm();
     initReveal();
   });
 })();

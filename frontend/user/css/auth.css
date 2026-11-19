@@ -1,0 +1,89 @@
+/* R-EALIZE ログイン・パスワード再設定・申込フォーム・処理中の画面（lp.css のあとに読む） */
+
+/* ---------- ログイン・再設定のページ ---------- */
+.auth-hd .hd-in { padding-top: 10px; padding-bottom: 10px; }
+.auth-main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 16px 56px; }
+.auth-card { position: relative; width: 100%; max-width: 480px; padding: 36px 24px 28px; }
+.auth-card:hover { transform: none; box-shadow: 8px 8px 0 var(--red); }
+.auth-badge { position: absolute; top: -16px; left: 16px; background: var(--red); color: #fff; font-size: 18px; padding: 2px 14px; border: 2px solid #000; transform: rotate(-2deg); }
+.auth-badge.is-ok { background: #15803d; }
+.auth-badge.is-ng { background: #555; }
+.auth-title { font-size: 24px; font-weight: 900; margin: 8px 0 10px; padding-bottom: 8px; border-bottom: 4px solid #000; line-height: 1.5; }
+.auth-lead { font-size: 15px; font-weight: 700; line-height: 1.9; margin-bottom: 16px; }
+.auth-alert { background: #fff3c4; border: 2px solid #000; border-left: 8px solid var(--red); padding: 10px 12px; font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.auth-links { margin-top: 18px; display: grid; gap: 4px; font-size: 14px; font-weight: 700; }
+.auth-links a { display: inline-flex; align-items: center; min-height: 40px; color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
+.auth-note { margin-top: 12px; font-size: 12px; font-weight: 700; color: #555; line-height: 1.8; }
+.auth-back { margin-top: 28px; font-size: 14px; font-weight: 700; }
+.auth-back a { display: inline-flex; min-height: 44px; align-items: center; color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+.auth-fields { margin: 0 0 16px; padding: 12px 14px; background: #000; color: #fff; border-left: 8px solid var(--yellow); }
+.auth-fields dt { font-size: 12px; font-weight: 700; color: var(--yellow); }
+.auth-fields dd { font-size: 17px; font-weight: 900; margin-top: 2px; }
+.check-list { margin: 0 0 16px; padding-left: 1.2em; list-style: disc; font-size: 14px; font-weight: 700; line-height: 1.9; }
+body.auth-page { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ---------- 入力欄（ログイン・再設定・申込フォーム） ---------- */
+.field { display: block; margin-bottom: 14px; }
+.field > span:first-child { display: block; font-size: 14px; font-weight: 900; margin-bottom: 4px; }
+.field input[type="text"], .field input[type="email"], .field input[type="password"] {
+  width: 100%; min-height: 48px; padding: 10px 12px; font: inherit; font-size: 16px; font-weight: 700;
+  color: #111; background: #fff; border: 3px solid #000;
+}
+.field input:focus { outline: 3px solid var(--yellow); outline-offset: 0; border-color: var(--red); }
+.pw-wrap { display: flex; }
+.pw-wrap input { flex: 1; min-width: 0; border-right: 0 !important; }
+.pw-toggle { flex-shrink: 0; min-width: 64px; min-height: 48px; padding: 0 10px; background: #000; color: #fff; border: 3px solid #000; font: inherit; font-size: 13px; font-weight: 900; cursor: pointer; }
+.pw-toggle[aria-pressed="true"] { background: var(--red); }
+.pw-toggle rt { color: var(--yellow); }
+.form-msg { min-height: 1.5em; margin: 4px 0 12px; font-size: 14px; font-weight: 700; color: #15803d; line-height: 1.8; }
+.form-msg:empty { min-height: 0; margin: 0; }
+.form-msg.is-error { color: var(--red); }
+.agree { display: flex; align-items: flex-start; gap: 10px; margin: 6px 0 12px; font-size: 14px; font-weight: 700; line-height: 1.9; }
+.agree input { width: 22px; height: 22px; margin-top: 4px; flex-shrink: 0; accent-color: var(--red); }
+.link-btn { padding: 0; border: 0; background: none; color: var(--red); font: inherit; font-weight: 900; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* ---------- 申込フォーム（LP のモーダルの中） ---------- */
+.apply-card { max-width: 560px; transform: none; }
+.apply-card:hover { transform: none; }
+.apply-group { border: 0; margin: 0 0 16px; padding: 0; }
+.apply-group legend { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 900; margin-bottom: 8px; padding: 0; }
+.step-no { background: #000; color: var(--yellow); font-family: var(--font-en); font-size: 15px; padding: 0 8px; }
+.plan-radios { display: grid; gap: 8px; }
+.plan-radios label { position: relative; display: block; cursor: pointer; }
+.plan-radios input { position: absolute; opacity: 0; }
+.plan-radios label > span { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; padding: 8px 12px; background: #fff; border: 3px solid #000; font-weight: 900; font-size: 15px; }
+.plan-radios b { font-family: var(--font-en); font-weight: 400; font-size: 20px; color: var(--red); letter-spacing: .03em; }
+.plan-radios input:checked + span { background: var(--yellow); outline: 4px solid var(--red); outline-offset: -1px; }
+.plan-radios input:focus-visible + span { outline: 4px solid var(--red); }
+.plan-radios .is-bundle > span { background: #111; color: #fff; }
+.plan-radios .is-bundle b { color: var(--yellow); }
+.plan-radios .is-bundle input:checked + span { background: var(--red); color: #fff; }
+.plan-radios .is-bundle rt { color: var(--yellow); }
+.pay-fixed { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; background: #000; color: #fff; font-weight: 900; }
+.pay-fixed i { color: var(--yellow); }
+.pay-fixed rt { color: var(--yellow); }
+.note-small { margin-top: 8px; font-size: 13px; font-weight: 700; line-height: 1.8; color: #333; }
+.apply-done { background: #dcfce7; border: 3px solid #15803d; padding: 14px; font-size: 15px; font-weight: 700; line-height: 1.9; margin-bottom: 12px; }
+@media (min-width: 640px) { .plan-radios { grid-template-columns: 1fr 1fr; } .plan-radios .is-bundle { grid-column: 1 / -1; } }
+
+/* ---------- 規約・ポリシー（LP のモーダルの中） ---------- */
+.doc-body { font-size: 14px; font-weight: 500; line-height: 1.9; color: #111; }
+.doc-body h4 { font-size: 15px; font-weight: 900; margin: 18px 0 6px; padding-left: 10px; border-left: 6px solid var(--red); }
+.doc-body p { margin-bottom: 8px; }
+.doc-body ol, .doc-body ul { margin: 0 0 8px; padding-left: 1.5em; }
+.doc-body ol { list-style: decimal; }
+.doc-body ul { list-style: disc; }
+.doc-body li { margin-bottom: 4px; }
+.doc-date { margin-top: 16px; font-size: 13px; color: #555; }
+
+/* ---------- 処理中の画面 ---------- */
+.rz-loading { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0, 0, 0, .75); }
+.rz-loading-card { width: min(340px, 100%); background: #000; color: #fff; border: 4px solid #fff; box-shadow: 8px 8px 0 var(--red); padding: 22px 20px 18px; text-align: center; transform: skewX(-6deg); }
+.rz-loading-title { font-size: 30px; color: var(--yellow); letter-spacing: .14em; }
+.rz-loading-bar { height: 10px; margin: 12px 0; background: #333; overflow: hidden; border: 2px solid #fff; }
+.rz-loading-bar span { display: block; width: 40%; height: 100%; background: var(--red); animation: rzbar 1.1s ease-in-out infinite; }
+@keyframes rzbar { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+.rz-loading-text { font-size: 14px; font-weight: 900; }
+.rz-loading-text rt { color: var(--yellow); }
+@media (prefers-reduced-motion: reduce) { .rz-loading-bar span { animation: none; width: 100%; } }

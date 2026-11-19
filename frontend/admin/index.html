@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理画面 | R-EALIZE</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css?v=20261119c">
+</head>
+<body>
+
+  <!-- ログイン -->
+  <main class="login-view" id="loginView" hidden>
+    <form class="card login-card" id="loginForm" novalidate>
+      <div class="login-brand"><span class="mark en">SSW1</span><span class="en">R-EALIZE</span><small>管理画面</small></div>
+      <label class="field"><span>メールアドレス</span><input type="email" name="email" autocomplete="username" required></label>
+      <label class="field"><span>パスワード</span><input type="password" name="password" autocomplete="current-password" required></label>
+      <p class="form-msg" id="loginMsg" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn btn-red btn-block">ログイン</button>
+      <p class="login-note">R-EALIZE の管理者アカウントでログインしてください。</p>
+    </form>
+  </main>
+
+  <!-- 管理画面 -->
+  <div class="app" id="appView" hidden>
+    <header class="topbar">
+      <div class="topbar-in">
+        <div class="brand"><span class="mark en">SSW1</span><span class="en">R-EALIZE</span><small>管理画面</small></div>
+        <nav class="tabs" aria-label="管理メニュー">
+          <button type="button" class="tab is-active" data-view="dashboard">ダッシュボード</button>
+          <button type="button" class="tab" data-view="applications">申込<span class="tab-badge" id="waitingBadge" hidden></span></button>
+          <button type="button" class="tab" data-view="users">受講生</button>
+        </nav>
+        <div class="topbar-right">
+          <button type="button" class="btn btn-white btn-sm" id="reloadBtn">最新にする</button>
+          <button type="button" class="btn btn-dark btn-sm" id="logoutBtn">ログアウト</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <p class="notice" id="notice" role="status" aria-live="polite" hidden></p>
+
+      <!-- ダッシュボード -->
+      <section class="view" data-view="dashboard">
+        <h1 class="view-title">ダッシュボード</h1>
+        <div class="kpis">
+          <div class="kpi"><p class="kpi-label">入金待ち</p><p class="kpi-value" id="kpiWaiting">0</p><p class="kpi-sub" id="kpiWaitingSub"></p></div>
+          <div class="kpi"><p class="kpi-label">今月の売上（発行した分）</p><p class="kpi-value" id="kpiSales">¥0</p><p class="kpi-sub" id="kpiSalesSub"></p></div>
+          <div class="kpi"><p class="kpi-label">利用中の受講生</p><p class="kpi-value" id="kpiUsers">0</p><p class="kpi-sub" id="kpiUsersSub"></p></div>
+        </div>
+        <div class="card">
+          <h2 class="card-title">分野ごとの受講生（利用中）</h2>
+          <div class="bars" id="fieldBars"></div>
+        </div>
+      </section>
+
+      <!-- 申込 -->
+      <section class="view" data-view="applications" hidden>
+        <h1 class="view-title">申込</h1>
+        <div class="toolbar">
+          <div class="chips" id="statusChips">
+            <button type="button" class="chip is-active" data-status="awaiting_payment">入金待ち <b data-count="awaiting_payment">0</b></button>
+            <button type="button" class="chip" data-status="issued">発行済み <b data-count="issued">0</b></button>
+            <button type="button" class="chip" data-status="expired">期限切れ <b data-count="expired">0</b></button>
+            <button type="button" class="chip" data-status="cancelled">キャンセル <b data-count="cancelled">0</b></button>
+            <button type="button" class="chip" data-status="">すべて <b data-count="all">0</b></button>
+          </div>
+          <input type="search" class="search" id="appSearch" placeholder="申込番号・名前・メールで探す" aria-label="申込を探す">
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>申込日</th><th>申込番号</th><th>お名前・メール</th><th>分野</th><th>金額</th><th>支払期限</th><th>状態</th><th>操作</th></tr></thead>
+            <tbody id="appRows"></tbody>
+          </table>
+          <p class="empty" id="appEmpty" hidden>該当する申込はありません。</p>
+        </div>
+        <p class="hint">振込名義の前に、申込番号の最後の4文字が付いています（例：RZ-20261119-<b>K7Q2</b> → 「K7Q2 ヤマダ タロウ」）。入金を確かめたら「発行」を押してください。発行メールが自動で届きます。</p>
+      </section>
+
+      <!-- 受講生 -->
+      <section class="view" data-view="users" hidden>
+        <h1 class="view-title">受講生</h1>
+        <div class="toolbar">
+          <input type="search" class="search" id="userSearch" placeholder="名前・メールで探す" aria-label="受講生を探す">
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>お名前・メール</th><th>状態</th><th>分野</th><th>発行日</th><th>最後のログイン</th><th>操作</th></tr></thead>
+            <tbody id="userRows"></tbody>
+          </table>
+          <p class="empty" id="userEmpty" hidden>受講生はまだいません。</p>
+        </div>
+        <p class="hint">「分野を追加」は、受講生から追加の入金があったときなどに使います（メールは送られません）。</p>
+      </section>
+    </main>
+  </div>
+
+  <!-- 確認のダイアログ -->
+  <div class="modal" id="confirmModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h2 class="modal-title" id="confirmTitle"></h2>
+      <div class="modal-body" id="confirmBody"></div>
+      <label class="field" id="confirmNoteWrap" hidden><span>メモ（キャンセルの理由など）</span><input type="text" id="confirmNote" maxlength="200"></label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-white" id="confirmNo">やめる</button>
+        <button type="button" class="btn btn-red" id="confirmYes">実行する</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../user/js/config.js?v=20261119c"></script>
+  <script src="../user/js/common.js?v=20261119c"></script>
+  <script src="js/admin.js?v=20261119c"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン | R-EALIZE</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0D0D0D">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/lp.css?v=20261119c">
+  <link rel="stylesheet" href="css/auth.css?v=20261119c">
+</head>
+<body class="auth-page">
+
+  <header class="hd auth-hd">
+    <div class="hd-in container">
+      <a href="index.html" class="logo" aria-label="R-EALIZE トップページへ">
+        <span class="logo-mark en">SSW1</span>
+        <span class="logo-text">
+          <span class="logo-name en">R-EALIZE</span>
+          <span class="logo-sub"><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby> <ruby>試験対策<rt>しけんたいさく</rt></ruby></span>
+        </span>
+      </a>
+      <div class="hd-actions">
+        <div class="furi">
+          <span class="furi-label">ふりがな</span>
+          <button type="button" id="furigana-toggle" class="furi-btn en" aria-pressed="true" aria-label="ふりがなの表示">ON</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <!-- ログイン -->
+    <section class="auth-card light box" id="loginCard" hidden>
+      <span class="auth-badge en">LOGIN</span>
+      <h1 class="auth-title">ログイン</h1>
+      <p class="auth-lead"><ruby>発行<rt>はっこう</rt></ruby>メールに<ruby>書<rt>か</rt></ruby>かれたメールアドレスと、お<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>みのときに<ruby>決<rt>き</rt></ruby>めたパスワードを<ruby>入力<rt>にゅうりょく</rt></ruby>してください。</p>
+
+      <p class="auth-alert" id="loginAlert" role="alert" hidden></p>
+
+      <form id="loginForm" novalidate>
+        <label class="field">
+          <span>メールアドレス</span>
+          <input type="email" name="email" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span>パスワード</span>
+          <span class="pw-wrap">
+            <input type="password" name="password" autocomplete="current-password" required>
+            <button type="button" class="pw-toggle" data-pw-toggle aria-pressed="false"><span><ruby>表示<rt>ひょうじ</rt></ruby></span></button>
+          </span>
+        </label>
+        <p class="form-msg" id="loginMsg" role="status" aria-live="polite"></p>
+        <button type="submit" class="btn btn-red btn-clip btn-block btn-lg"><span>ログイン</span></button>
+      </form>
+
+      <ul class="auth-links">
+        <li><a href="reset.html">パスワードを<ruby>忘<rt>わす</rt></ruby>れた<ruby>方<rt>かた</rt></ruby>は、こちら</a></li>
+        <li><a href="index.html#pricing">はじめての<ruby>方<rt>かた</rt></ruby>は、こちらからお<ruby>申<rt>もう</rt></ruby>し<ruby>込<rt>こ</rt></ruby>み</a></li>
+      </ul>
+      <p class="auth-note">※ <ruby>同<rt>おな</rt></ruby>じアカウントで、<ruby>別<rt>べつ</rt></ruby>の<ruby>端末<rt>たんまつ</rt></ruby>から<ruby>同時<rt>どうじ</rt></ruby>にログインすることはできません。あとからログインした<ruby>端末<rt>たんまつ</rt></ruby>が<ruby>優先<rt>ゆうせん</rt></ruby>されます。</p>
+    </section>
+
+    <!-- ログインしたあと（学習の画面ができるまで） -->
+    <section class="auth-card light box" id="doneCard" hidden>
+      <span class="auth-badge is-ok en">WELCOME</span>
+      <h1 class="auth-title"><span id="userName"></span>さん、ようこそ！</h1>
+      <p class="auth-lead">ログインしています。</p>
+      <dl class="auth-fields">
+        <dt>ご<ruby>利用<rt>りよう</rt></ruby>の<ruby>分野<rt>ぶんや</rt></ruby></dt>
+        <dd id="userFields"></dd>
+      </dl>
+      <p class="auth-lead"><ruby>学習<rt>がくしゅう</rt></ruby>の<ruby>画面<rt>がめん</rt></ruby>は、ただいま<ruby>準備中<rt>じゅんびちゅう</rt></ruby>です。もうしばらくお<ruby>待<rt>ま</rt></ruby>ちください。</p>
+      <p id="adminLink" hidden><a class="btn btn-black btn-block" href="../admin/index.html"><span>管理画面へ</span></a></p>
+      <p style="margin-top:12px"><button type="button" class="btn btn-gray btn-block" id="logoutBtn"><span>ログアウト</span></button></p>
+    </section>
+
+    <p class="auth-back"><a href="index.html">← R-EALIZE のトップページへ</a></p>
+  </main>
+
+  <script src="js/config.js?v=20261119c"></script>
+  <script src="js/common.js?v=20261119c"></script>
+  <script src="js/login.js?v=20261119c"></script>
+</body>
+</html>

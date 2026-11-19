@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>パスワードの再設定 | R-EALIZE</title>
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#0D0D0D">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/lp.css?v=20261119c">
+  <link rel="stylesheet" href="css/auth.css?v=20261119c">
+</head>
+<body class="auth-page">
+
+  <header class="hd auth-hd">
+    <div class="hd-in container">
+      <a href="index.html" class="logo" aria-label="R-EALIZE トップページへ">
+        <span class="logo-mark en">SSW1</span>
+        <span class="logo-text">
+          <span class="logo-name en">R-EALIZE</span>
+          <span class="logo-sub"><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby> <ruby>試験対策<rt>しけんたいさく</rt></ruby></span>
+        </span>
+      </a>
+      <div class="hd-actions">
+        <div class="furi">
+          <span class="furi-label">ふりがな</span>
+          <button type="button" id="furigana-toggle" class="furi-btn en" aria-pressed="true" aria-label="ふりがなの表示">ON</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="auth-main">
+    <!-- ① メールアドレスを入力する -->
+    <section class="auth-card light box" id="requestCard" hidden>
+      <span class="auth-badge en">RESET</span>
+      <h1 class="auth-title">パスワードの<ruby>再設定<rt>さいせってい</rt></ruby></h1>
+      <p class="auth-lead"><ruby>登録<rt>とうろく</rt></ruby>しているメールアドレスを<ruby>入力<rt>にゅうりょく</rt></ruby>してください。パスワードを<ruby>再設定<rt>さいせってい</rt></ruby>するためのリンクを、メールでお<ruby>送<rt>おく</rt></ruby>りします。</p>
+      <form id="requestForm" novalidate>
+        <label class="field">
+          <span>メールアドレス</span>
+          <input type="email" name="email" autocomplete="email" required>
+        </label>
+        <p class="form-msg" id="requestMsg" role="status" aria-live="polite"></p>
+        <button type="submit" class="btn btn-red btn-clip btn-block btn-lg"><span>メールを<ruby>送<rt>おく</rt></ruby>る</span></button>
+      </form>
+      <ul class="auth-links">
+        <li><a href="login.html">ログインページにもどる</a></li>
+      </ul>
+    </section>
+
+    <!-- ② メールを送ったあと -->
+    <section class="auth-card light box" id="sentCard" hidden>
+      <span class="auth-badge is-ok en">CHECK MAIL</span>
+      <h1 class="auth-title">メールを<ruby>確認<rt>かくにん</rt></ruby>してください</h1>
+      <p class="auth-lead"><ruby>入力<rt>にゅうりょく</rt></ruby>したメールアドレスが<ruby>登録<rt>とうろく</rt></ruby>されている<ruby>場合<rt>ばあい</rt></ruby>は、パスワード<ruby>再設定<rt>さいせってい</rt></ruby>のご<ruby>案内<rt>あんない</rt></ruby>をお<ruby>送<rt>おく</rt></ruby>りしました。メールに<ruby>書<rt>か</rt></ruby>かれたリンクから、<b>30<ruby>分<rt>ぷん</rt></ruby><ruby>以内<rt>いない</rt></ruby></b>に<ruby>新<rt>あたら</rt></ruby>しいパスワードを<ruby>設定<rt>せってい</rt></ruby>してください。</p>
+      <ul class="check-list">
+        <li>メールが<ruby>届<rt>とど</rt></ruby>かないときは、<ruby>迷惑<rt>めいわく</rt></ruby>メールのフォルダも<ruby>確認<rt>かくにん</rt></ruby>してください。</li>
+        <li>もう<ruby>一度<rt>いちど</rt></ruby><ruby>送<rt>おく</rt></ruby>ると、<ruby>前<rt>まえ</rt></ruby>のメールのリンクは<ruby>使<rt>つか</rt></ruby>えなくなります。</li>
+      </ul>
+      <button type="button" class="btn btn-gray btn-block" id="againBtn"><span>メールアドレスを<ruby>入力<rt>にゅうりょく</rt></ruby>しなおす</span></button>
+      <ul class="auth-links">
+        <li><a href="login.html">ログインページにもどる</a></li>
+      </ul>
+    </section>
+
+    <!-- ③ 新しいパスワードを入力する（メールのリンクから開いたとき） -->
+    <section class="auth-card light box" id="newCard" hidden>
+      <span class="auth-badge en">NEW PASSWORD</span>
+      <h1 class="auth-title"><ruby>新<rt>あたら</rt></ruby>しいパスワード</h1>
+      <p class="auth-lead"><span id="maskedEmail"></span> のアカウントの、<ruby>新<rt>あたら</rt></ruby>しいパスワードを<ruby>入力<rt>にゅうりょく</rt></ruby>してください。</p>
+      <form id="newForm" novalidate>
+        <input type="email" name="username" autocomplete="username" hidden>
+        <label class="field">
+          <span><ruby>新<rt>あたら</rt></ruby>しいパスワード（8〜64<ruby>文字<rt>もじ</rt></ruby>）</span>
+          <span class="pw-wrap">
+            <input type="password" name="password" autocomplete="new-password" minlength="8" maxlength="64" required>
+            <button type="button" class="pw-toggle" data-pw-toggle aria-pressed="false"><span><ruby>表示<rt>ひょうじ</rt></ruby></span></button>
+          </span>
+        </label>
+        <label class="field">
+          <span><ruby>新<rt>あたら</rt></ruby>しいパスワード（<ruby>確認<rt>かくにん</rt></ruby>）</span>
+          <span class="pw-wrap">
+            <input type="password" name="passwordConfirm" autocomplete="new-password" maxlength="64" required>
+            <button type="button" class="pw-toggle" data-pw-toggle aria-pressed="false"><span><ruby>表示<rt>ひょうじ</rt></ruby></span></button>
+          </span>
+        </label>
+        <p class="form-msg" id="newMsg" role="status" aria-live="polite"></p>
+        <button type="submit" class="btn btn-red btn-clip btn-block btn-lg"><span>パスワードを<ruby>変更<rt>へんこう</rt></ruby>する</span></button>
+      </form>
+      <p class="auth-note">※ パスワードを<ruby>変更<rt>へんこう</rt></ruby>すると、ログイン<ruby>中<rt>ちゅう</rt></ruby>の<ruby>端末<rt>たんまつ</rt></ruby>はログアウトします。</p>
+    </section>
+
+    <!-- ④ 変更できたとき -->
+    <section class="auth-card light box" id="doneCard" hidden>
+      <span class="auth-badge is-ok en">DONE</span>
+      <h1 class="auth-title">パスワードを<ruby>変更<rt>へんこう</rt></ruby>しました</h1>
+      <p class="auth-lead"><ruby>新<rt>あたら</rt></ruby>しいパスワードで、ログインしてください。</p>
+      <a href="login.html" class="btn btn-red btn-clip btn-block btn-lg"><span>ログインページへ</span></a>
+    </section>
+
+    <!-- ⑤ リンクが使えないとき -->
+    <section class="auth-card light box" id="invalidCard" hidden>
+      <span class="auth-badge is-ng en">SORRY</span>
+      <h1 class="auth-title" id="invalidTitle">このリンクは<ruby>使<rt>つか</rt></ruby>えません</h1>
+      <p class="auth-lead" id="invalidLead"><ruby>有効<rt>ゆうこう</rt></ruby><ruby>期限<rt>きげん</rt></ruby>（30<ruby>分<rt>ぷん</rt></ruby>）が<ruby>過<rt>す</rt></ruby>ぎたか、すでに<ruby>使<rt>つか</rt></ruby>われたリンクです。お<ruby>手数<rt>てすう</rt></ruby>ですが、もう<ruby>一度<rt>いちど</rt></ruby>お<ruby>手続<rt>てつづ</rt></ruby>きをしてください。</p>
+      <a href="reset.html" class="btn btn-red btn-clip btn-block btn-lg"><span>もう<ruby>一度<rt>いちど</rt></ruby>メールを<ruby>送<rt>おく</rt></ruby>る</span></a>
+      <ul class="auth-links">
+        <li><a href="login.html">ログインページにもどる</a></li>
+      </ul>
+    </section>
+
+    <p class="auth-back"><a href="index.html">← R-EALIZE のトップページへ</a></p>
+  </main>
+
+  <script src="js/config.js?v=20261119c"></script>
+  <script src="js/common.js?v=20261119c"></script>
+  <script src="js/reset.js?v=20261119c"></script>
+</body>
+</html>
