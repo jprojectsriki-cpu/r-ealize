@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学習の画面（サンプル） | R-EALIZE</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0D0D0D">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/lp.css?v=20261119d">
+  <link rel="stylesheet" href="css/auth.css?v=20261119d">
+  <link rel="stylesheet" href="css/app.css?v=20261119d">
+</head>
+<body class="app-page">
+
+  <div class="sample-bar">デザイン<ruby>確認<rt>かくにん</rt></ruby><ruby>用<rt>よう</rt></ruby>のサンプルです（<ruby>問題<rt>もんだい</rt></ruby>・<ruby>数字<rt>すうじ</rt></ruby>は<ruby>見本<rt>みほん</rt></ruby>。<ruby>答<rt>こた</rt></ruby>えは<ruby>保存<rt>ほぞん</rt></ruby>されません）</div>
+
+  <header class="hd app-hd" id="appHeader">
+    <div class="hd-in container">
+      <a href="#" class="logo" data-go="home" aria-label="ホームへ">
+        <span class="logo-mark en">SSW1</span>
+        <span class="logo-text">
+          <span class="logo-name en">R-EALIZE</span>
+          <span class="logo-sub"><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby> <ruby>試験対策<rt>しけんたいさく</rt></ruby></span>
+        </span>
+      </a>
+      <div class="hd-actions">
+        <div class="furi">
+          <span class="furi-label">ふりがな</span>
+          <button type="button" id="furigana-toggle" class="furi-btn en" aria-pressed="true" aria-label="ふりがなの表示">ON</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 問題の画面の上のバー（問題を解いているときだけ） -->
+  <div class="q-top" id="quizTop" hidden>
+    <div class="q-top-in">
+      <button type="button" class="q-quit" id="quizQuit" aria-label="やめる"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+      <div class="q-where" id="quizWhere"></div>
+      <div class="q-num en" id="quizNum"></div>
+    </div>
+    <div class="q-progress"><span id="quizBar" style="width:0"></span></div>
+  </div>
+
+  <main class="app-main" id="view"></main>
+
+  <nav class="tabbar" id="tabbar" aria-label="メニュー">
+    <div class="tabbar-in">
+      <button type="button" class="is-on" data-go="home"><i class="fa-solid fa-house" aria-hidden="true"></i><span>ホーム</span></button>
+      <button type="button" data-go="review"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i><span><ruby>復習<rt>ふくしゅう</rt></ruby></span><span class="soon">②で<ruby>作<rt>つく</rt></ruby>る</span></button>
+      <button type="button" data-go="mock"><i class="fa-solid fa-file-signature" aria-hidden="true"></i><span><ruby>模試<rt>もし</rt></ruby></span><span class="soon">③で<ruby>作<rt>つく</rt></ruby>る</span></button>
+      <button type="button" data-go="stats"><i class="fa-solid fa-chart-column" aria-hidden="true"></i><span><ruby>記録<rt>きろく</rt></ruby></span><span class="soon">④で<ruby>作<rt>つく</rt></ruby>る</span></button>
+      <button type="button" data-go="mypage"><i class="fa-solid fa-user" aria-hidden="true"></i><span>マイページ</span></button>
+    </div>
+  </nav>
+
+  <script src="js/common.js?v=20261119d"></script>
+  <script src="js/app-sample.js?v=20261119d"></script>
+</body>
+</html>
