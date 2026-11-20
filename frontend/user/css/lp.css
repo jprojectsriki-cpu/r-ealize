@@ -125,10 +125,12 @@ body.furigana-off rt { display: none; }
 }
 .hd-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; padding-bottom: 10px; }
 .logo { display: flex; align-items: center; gap: 10px; }
+/* ロゴ：R-シリーズ共通のマーク（img/logo.png）を白い台に載せる */
 .logo-mark {
-  background: var(--red); color: var(--yellow); font-size: 20px; line-height: 1;
-  padding: 6px 8px; border: 2px solid #fff; transform: rotate(-3deg); transition: transform .2s;
+  width: 40px; height: 40px; flex: none; display: grid; place-items: center;
+  background: #fff; border: 2px solid var(--red); transform: rotate(-3deg); transition: transform .2s;
 }
+.logo-mark img { display: block; width: 26px; height: 30px; }
 .logo:hover .logo-mark { transform: rotate(0); }
 .logo-text { display: flex; flex-direction: column; }
 .logo-name { font-size: 24px; line-height: 1; color: #fff; }
@@ -493,7 +495,7 @@ body.furigana-off rt { display: none; }
 .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 .footer-brand { grid-column: 1 / -1; }
 .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.footer-logo .logo-mark { font-size: 16px; }
+.footer-logo .logo-mark { width: 40px; height: 40px; }
 .footer-logo .brand-name { font-size: 24px; color: var(--yellow); }
 .footer-brand p { color: rgba(255, 255, 255, .78); line-height: 2; max-width: 30em; }
 .footer-series { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; margin-top: 8px; color: var(--yellow); font-weight: 700; }
