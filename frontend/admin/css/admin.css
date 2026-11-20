@@ -36,7 +36,9 @@ button, input, select { font: inherit; }
 .login-card { width: 100%; max-width: 380px; }
 .login-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; font-size: 24px; }
 .login-brand small, .brand small { font-size: 13px; font-weight: 700; color: var(--ink-2); font-family: var(--font-ja); }
-.mark { background: var(--red); color: var(--yellow); padding: 2px 6px; font-size: .75em; transform: rotate(-3deg); display: inline-block; }
+/* ロゴ：R-シリーズ共通のマーク（../user/img/logo.png）を白い台に載せる */
+.mark { width: 34px; height: 34px; flex: none; display: inline-grid; place-items: center; background: #fff; border: 2px solid var(--red); transform: rotate(-3deg); }
+.mark img { display: block; width: 22px; height: 25px; }
 .login-note { margin-top: 12px; font-size: 13px; color: var(--ink-2); }
 
 /* 入力 */
