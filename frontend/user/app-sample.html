@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/lp.css?v=20261119d">
   <link rel="stylesheet" href="css/auth.css?v=20261119d">
-  <link rel="stylesheet" href="css/app.css?v=20261119d">
+  <link rel="stylesheet" href="css/app.css?v=20261120a">
 </head>
 <body class="app-page">
 
@@ -27,11 +27,19 @@
           <span class="logo-sub"><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby> <ruby>試験対策<rt>しけんたいさく</rt></ruby></span>
         </span>
       </a>
+      <nav class="dash-nav" aria-label="メニュー">
+        <a href="#" class="is-on" data-go="home">ホーム</a>
+        <a href="#" data-go="practice"><ruby>問題<rt>もんだい</rt></ruby><ruby>演習<rt>えんしゅう</rt></ruby></a>
+        <a href="#" data-go="review">まちがい<ruby>復習<rt>ふくしゅう</rt></ruby></a>
+        <a href="#" data-go="mock"><ruby>模擬<rt>もぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby></a>
+        <a href="#" data-go="stats"><ruby>学習<rt>がくしゅう</rt></ruby><ruby>記録<rt>きろく</rt></ruby></a>
+      </nav>
       <div class="hd-actions">
         <div class="furi">
           <span class="furi-label">ふりがな</span>
           <button type="button" id="furigana-toggle" class="furi-btn en" aria-pressed="true" aria-label="ふりがなの表示">ON</button>
         </div>
+        <span class="hd-user"><i class="fa-solid fa-user" aria-hidden="true"></i><span>Nguyenさん</span></span>
       </div>
     </div>
   </header>
@@ -59,6 +67,6 @@
   </nav>
 
   <script src="js/common.js?v=20261119d"></script>
-  <script src="js/app-sample.js?v=20261119d"></script>
+  <script src="js/app-sample.js?v=20261120a"></script>
 </body>
 </html>
