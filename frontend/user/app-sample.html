@@ -10,9 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+JP:wght@500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/lp.css?v=20261121a">
+  <link rel="stylesheet" href="css/lp.css?v=20261121b">
   <link rel="stylesheet" href="css/auth.css?v=20261119d">
-  <link rel="stylesheet" href="css/app.css?v=20261121a">
+  <link rel="stylesheet" href="css/app.css?v=20261121b">
 </head>
 <body class="app-page">
 
@@ -52,6 +52,13 @@
       <div class="q-num en" id="quizNum"></div>
     </div>
     <div class="q-progress"><span id="quizBar" style="width:0"></span></div>
+    <div class="mock-bar" id="mockBar" hidden>
+      <div class="mock-bar-in">
+        <span class="mock-count" id="mockCount"></span>
+        <button type="button" class="pal-toggle" id="palToggle" aria-expanded="false" aria-controls="mockPanel"><i class="fa-solid fa-table-cells" aria-hidden="true"></i><span><ruby>一覧<rt>いちらん</rt></ruby>・<ruby>採点<rt>さいてん</rt></ruby></span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
+      </div>
+      <div class="mock-panel" id="mockPanel" hidden></div>
+    </div>
   </div>
 
   <main class="app-main" id="view"></main>
@@ -67,6 +74,6 @@
   </nav>
 
   <script src="js/common.js?v=20261119d"></script>
-  <script src="js/app-sample.js?v=20261121a"></script>
+  <script src="js/app-sample.js?v=20261121b"></script>
 </body>
 </html>

@@ -150,6 +150,12 @@ body.furigana-off rt { display: none; }
 }
 .furi-btn[aria-pressed="false"] { background: #555; }
 .hd-apply { display: none; font-size: 14px; padding: 8px 22px; }
+.hd-login { display: none; align-items: center; gap: 6px; font-size: 14px; padding: 7px 14px; background: transparent; color: #fff; border: 2px solid #fff; }
+.hd-login:hover { background: #fff; color: #000; }
+.hd-login i { color: var(--yellow); }
+.hd-login:hover i { color: var(--red); }
+.m-nav-grid .m-nav-login { justify-content: center; gap: 8px; border: 2px solid #fff; }
+.m-nav-grid .m-nav-login i { color: var(--yellow); }
 .menu-btn {
   width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
   background: var(--char); color: #fff; border: 2px solid #fff; font-size: 18px; cursor: pointer;
@@ -166,7 +172,7 @@ body.furigana-off rt { display: none; }
   .furi-label { display: inline; }
   .logo-name { font-size: 28px; }
 }
-@media (min-width: 768px) { .hd-apply { display: inline-flex; } }
+@media (min-width: 768px) { .hd-apply, .hd-login { display: inline-flex; } }
 @media (min-width: 1280px) {
   .hd-nav { display: flex; }
   .menu-btn, .m-nav { display: none !important; }

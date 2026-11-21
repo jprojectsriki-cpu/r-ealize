@@ -123,11 +123,13 @@
     document.getElementById('tabbar').hidden = on;
     document.body.style.paddingBottom = on ? '0' : '';
     if (!on) stopTimer();
+    if (!on || !mock) showMockBar(false);
   }
   function fieldOf(id) { return FIELDS.filter(function (x) { return x.id === id; })[0]; }
   var LABELS = ['1', '2', '3', '4', '5'];
   var STAGES = [['EASY', '{基礎|きそ}'], ['NORMAL', '{本番|ほんばん}レベル'], ['HARD', '{応用|おうよう}']];
   var stageNow = 0;
+  var combo = { now: 3, best: 12 }; // 連続正解（問題演習だけで数える。見本の数字から始める）
   var current = 'accommodation';
 
   /* ---------- ① ホーム（ダッシュボード） ---------- */
@@ -159,7 +161,6 @@
       '<p class="welcome-lead">' + rb('{今日|きょう}も{少|すこ}しずつ、{合格|ごうかく}に{近|ちか}づこう！') + '</p></div>' +
       '<div class="field-switch"><label for="fieldSelect">' + rb('{学習中|がくしゅうちゅう}の{分野|ぶんや}') + '</label>' +
       '<select id="fieldSelect">' + own.map(function (x) { return '<option value="' + x.id + '"' + (x.id === current ? ' selected' : '') + '>' + plain(x.name) + '</option>'; }).join('') + '</select>' +
-      '<div class="field-switch-row"><span>' + rb('{利用期限|りようきげん}') + '</span><b>' + rb('なし（{買|か}い{切|き}り）') + '</b></div>' +
       '<div class="field-switch-row"><span>' + rb('ほかの{分野|ぶんや}') + '</span><a href="#" data-go="mypage">' + rb('{追加|ついか}する') + '</a></div></div>' +
       '<div class="resume"><div class="resume-l"><span class="resume-badge">RESUME</span><div>' +
       '<p class="resume-small">' + rb('{前回|ぜんかい}の{続|つづ}き') + '</p>' +
@@ -170,7 +171,8 @@
     h += '<section class="kpis">' +
       '<div class="kpi"><div class="kpi-top"><span class="kpi-tag">STREAK</span><i class="fa-solid fa-fire" aria-hidden="true"></i></div>' +
         '<p class="kpi-label">' + rb('{連続|れんぞく}{学習|がくしゅう}{日数|にっすう}') + '</p><p class="kpi-num">' + d.streak + '<small>' + rb('{日|にち}') + '</small></p>' +
-        '<p class="kpi-note">' + rb('{毎日|まいにち}1{問|もん}でも{解|と}くと{続|つづ}きます') + '</p></div>' +
+        '<div class="kpi-combo"><p class="kpi-label">' + rb('{連続正解|れんぞくせいかい}') + '</p><p class="kpi-combo-num"><b class="en">' + combo.now + '</b><span class="en">COMBO</span></p>' +
+        '<p class="kpi-combo-best">' + rb('{最高|さいこう} ') + combo.best + ' COMBO</p></div></div>' +
       '<div class="kpi"><div class="kpi-top"><span class="kpi-tag is-red">ACCURACY</span><i class="fa-solid fa-bullseye" aria-hidden="true"></i></div>' +
         '<p class="kpi-label">' + rb('{正答率|せいとうりつ}（この{分野|ぶんや}）') + '</p><p class="kpi-num">' + d.rate + '<small>%</small></p>' +
         '<div class="kpi-bar"><span style="width:' + d.rate + '%"></span></div></div>' +
@@ -244,19 +246,21 @@
   }
 
   /* ---------- カットイン（LP と同じ演出） ---------- */
-  function cutIn(main, descHtml) {
+  function cutIn(main, descHtml, sub, dark) {
     var ov = document.getElementById('cutin');
     if (!ov) {
       ov = document.createElement('div');
       ov.id = 'cutin';
       ov.className = 'cutin';
       ov.setAttribute('aria-hidden', 'true');
-      ov.innerHTML = '<div class="cutin-banner" id="cutinBanner"><div class="halftone"></div><span class="cutin-sub en">R-EALIZE</span><p class="cutin-main en" id="cutinMain"></p><p class="cutin-desc" id="cutinDesc"></p></div>';
+      ov.innerHTML = '<div class="cutin-banner" id="cutinBanner"><div class="halftone"></div><span class="cutin-sub en" id="cutinSub">R-EALIZE</span><p class="cutin-main en" id="cutinMain"></p><p class="cutin-desc" id="cutinDesc"></p></div>';
       document.body.appendChild(ov);
     }
     document.getElementById('cutinMain').textContent = main;
+    document.getElementById('cutinSub').textContent = sub || 'R-EALIZE';
     document.getElementById('cutinDesc').innerHTML = descHtml;
     var banner = document.getElementById('cutinBanner');
+    banner.classList.toggle('is-dark', !!dark);
     ov.hidden = false;
     banner.classList.remove('is-anim'); void banner.offsetWidth;
     if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) banner.classList.add('is-anim');
@@ -289,69 +293,92 @@
     CATS.forEach(function (c, ci) { c.topics.forEach(function (t, ti) { if (opt.sel[topicKey(ci, ti)]) list.push({ cat: c, t: t }); }); });
     return list;
   }
+  function catStat(c) {
+    var tot = 0, done = 0, miss = 0;
+    c.topics.forEach(function (t) { var n = stageCount(c, t[1], t[0]); tot += n; done += Math.min(t[2], n); miss += t[3]; });
+    return { tot: tot, done: done, miss: miss };
+  }
   function practice() {
     quizMode(false); setTab('practice'); view.classList.remove('is-wide');
     var html = '<h1 class="app-title"><span class="en">PRACTICE</span>' + rb('{問題演習|もんだいえんしゅう}（{宿泊|しゅくはく}）') + '</h1>' +
       '<div class="stage-tabs">' + STAGES.map(function (s, k) {
         return '<button type="button" class="stage-tab' + (k === stageNow ? ' is-active' : '') + '"' + (k > stageNow ? ' disabled' : '') + ' data-stage="' + k + '">' +
           (k > stageNow ? '<i class="fa-solid fa-lock" aria-hidden="true"></i> ' : '') + s[0] + '<small>' + rb(s[1]) + '</small></button>';
-      }).join('') + '</div>' +
-      '<p class="lock-note">' + rb('NORMAL・HARD は、ひとつ{前|まえ}の STAGE の{模擬試験|もぎしけん}に{合格|ごうかく}すると{解|と}けるようになります。') + '</p>';
+      }).join('') + '</div>';
 
-    // 範囲
-    html += '<section class="set-box"><div class="set-head"><h2>' + rb('{出題範囲|しゅつだいはんい}') + '</h2>' +
-      '<button type="button" class="set-all" id="selAll">' + rb('すべて{選択|せんたく}') + '</button></div>';
+    // 続きから
+    if (saved) {
+      html += '<button type="button" class="quick-resume" id="resumeBtn"><i class="fa-solid fa-play" aria-hidden="true"></i><span><b>' + rb('{続|つづ}きから') + '</b>' +
+        rb('（' + (saved.i + 1) + ' / ' + saved.list.length + '{問目|もんめ}から）') + '</span></button>';
+    }
+    // おすすめ
+    html += '<button type="button" class="quick-rec" data-quick="rec"><span class="quick-rec-tag en">RECOMMEND</span>' +
+      '<span class="quick-rec-title">' + rb('おすすめの10{問|もん}') + '</span>' +
+      '<span class="quick-rec-desc">' + rb('まだ{解|と}いていない{問題|もんだい}から、{自動|じどう}で{選|えら}びます') + '</span>' +
+      '<span class="quick-rec-go"><i class="fa-solid fa-play" aria-hidden="true"></i></span></button>';
+
+    // カテゴリ
+    html += '<h2 class="quick-head">' + rb('カテゴリを{選|えら}んで{解|と}く') + '<small>' + rb('（{押|お}すと10{問|もん}{始|はじ}まります）') + '</small></h2>';
     var lastSubj = '';
     CATS.forEach(function (c, ci) {
+      if (c.subj !== lastSubj) { if (lastSubj) html += '</div>'; html += '<p class="set-subj">' + rb(c.subj) + '</p><div class="quick-cats">'; lastSubj = c.subj; }
+      var st = catStat(c);
+      html += '<button type="button" class="quick-cat" data-quick="' + ci + '"><span class="quick-cat-name">' + rb(c.name) + '</span>' +
+        '<span class="quick-cat-num">' + st.done + ' / ' + st.tot + rb('{問|もん}') + (st.miss ? '<b>' + rb('まちがい ') + st.miss + '</b>' : '') + '</span>' +
+        '<span class="quick-cat-bar"><span style="width:' + Math.round(st.done / st.tot * 100) + '%"></span></span></button>';
+    });
+    html += '</div>';
+
+    // くわしく選ぶ
+    html += '<details class="adv"' + (opt.adv ? ' open' : '') + ' id="adv"><summary><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>' + rb('くわしく{選|えら}ぶ（トピック・{順番|じゅんばん}・{問題|もんだい}の{数|かず}）') + '</span></summary><div class="adv-body">';
+    html += '<section class="set-box"><div class="set-head"><h2>' + rb('{出題範囲|しゅつだいはんい}') + '</h2>' +
+      '<button type="button" class="set-all" id="selAll">' + rb('すべて{選択|せんたく}') + '</button></div>';
+    lastSubj = '';
+    CATS.forEach(function (c, ci) {
       if (c.subj !== lastSubj) { html += '<p class="set-subj">' + rb(c.subj) + '</p>'; lastSubj = c.subj; }
-      var tot = 0, done = 0, miss = 0, on = 0;
-      c.topics.forEach(function (t, ti) { var n = stageCount(c, t[1], t[0]); tot += n; done += Math.min(t[2], n); miss += t[3]; if (opt.sel[topicKey(ci, ti)]) on++; });
+      var st = catStat(c), on = 0;
+      c.topics.forEach(function (t, ti) { if (opt.sel[topicKey(ci, ti)]) on++; });
       html += '<details class="rng"' + (on ? ' open' : '') + '><summary><label class="rng-cat" onclick="event.stopPropagation()">' +
         '<input type="checkbox" data-cat="' + ci + '"' + (on === c.topics.length ? ' checked' : '') + '><span>' + rb(c.name) + '</span></label>' +
-        '<span class="rng-meta">' + done + ' / ' + tot + (miss ? '<b>' + rb('{復習|ふくしゅう} ') + miss + '</b>' : '') + '</span></summary><div class="rng-topics">';
+        '<span class="rng-meta">' + st.done + ' / ' + st.tot + '</span></summary><div class="rng-topics">';
       c.topics.forEach(function (t, ti) {
         var n = stageCount(c, t[1], t[0]); var d = Math.min(t[2], n);
         html += '<label class="rng-topic"><input type="checkbox" data-topic="' + topicKey(ci, ti) + '"' + (opt.sel[topicKey(ci, ti)] ? ' checked' : '') + '>' +
-          '<span class="rng-name">' + rb(t[0]) + '</span><span class="rng-num">' + d + ' / ' + n + (t[3] ? '<b>' + rb('{復習|ふくしゅう} ') + t[3] + '</b>' : '') + '</span>' +
+          '<span class="rng-name">' + rb(t[0]) + '</span><span class="rng-num">' + d + ' / ' + n + '</span>' +
           '<span class="rng-bar"><span style="width:' + Math.round(d / n * 100) + '%"></span></span></label>';
       });
       html += '</div></details>';
     });
-    html += '</section>';
-
-    // 出し方
-    html += '<section class="set-box"><div class="set-head"><h2>' + rb('{出|だ}し{方|かた}') + '</h2></div>' +
+    html += '</section><section class="set-box"><div class="set-head"><h2>' + rb('{出|だ}し{方|かた}') + '</h2></div>' +
       '<div class="set-row"><span>' + rb('{順番|じゅんばん}') + '</span><div class="seg">' +
         '<button type="button" data-order="seq" class="' + (opt.order === 'seq' ? 'is-on' : '') + '">' + rb('{順番|じゅんばん}どおり') + '</button>' +
         '<button type="button" data-order="rand" class="' + (opt.order === 'rand' ? 'is-on' : '') + '">ランダム</button></div></div>' +
-      '<div class="set-row"><span>' + rb('{未回答|みかいとう}のみ') + '</span><button type="button" class="switch' + (opt.unanswered ? ' is-on' : '') + '" id="unans" aria-pressed="' + opt.unanswered + '"><span></span></button></div>' +
-      '<div class="set-row is-col"><span>' + rb('{出題数|しゅつだいすう}') + '</span><div class="seg is-wrap">' +
+      '<div class="set-row"><span>' + rb('{解|と}いていない{問題|もんだい}だけ') + '</span><button type="button" class="switch' + (opt.unanswered ? ' is-on' : '') + '" id="unans" aria-pressed="' + opt.unanswered + '"><span></span></button></div>' +
+      '<div class="set-row is-col"><span>' + rb('{問題|もんだい}の{数|かず}') + '</span><div class="seg is-wrap">' +
         COUNTS.map(function (c) { return '<button type="button" data-count="' + c[0] + '" class="' + (String(opt.count) === String(c[0]) ? 'is-on' : '') + '">' + rb(c[1]) + '</button>'; }).join('') +
       '</div></div></section>';
-
-    // 始める
     var picked = selectedTopics();
     var avail = picked.reduce(function (a, x) { return a + stageCount(x.cat, x.t[1], x.t[0]); }, 0);
     var left = picked.reduce(function (a, x) { var n = stageCount(x.cat, x.t[1], x.t[0]); return a + n - Math.min(x.t[2], n); }, 0);
     html += '<div class="start-box"><p class="start-info">' + (picked.length
         ? rb('{選|えら}んだトピック：') + '<b>' + picked.length + '</b>　' + rb('{問題|もんだい}：') + '<b>' + (opt.unanswered ? left : avail) + '</b>' + rb('{問|もん}')
         : rb('{出題範囲|しゅつだいはんい}を{選|えら}んでください')) + '</p>' +
-      '<button type="button" class="btn btn-red btn-clip btn-block" id="startBtn"' + (picked.length ? '' : ' disabled') + '><i class="fa-solid fa-play" aria-hidden="true"></i><span>' + rb('{始|はじ}める') + '</span></button>' +
-      '<button type="button" class="btn btn-white btn-block" id="resumeBtn"' + (saved ? '' : ' disabled') + '><span>' +
-        (saved ? rb('{続|つづ}きから{始|はじ}める（' + (saved.i + 1) + ' / ' + saved.list.length + '{問目|もんめ}から）') : rb('{続|つづ}きから{始|はじ}める（{途中|とちゅう}の{演習|えんしゅう}はありません）')) + '</span></button>' +
-      '<p class="start-note">' + rb('サンプルなので、{見本|みほん}の{問題|もんだい}（15{問|もん}）から{出|だ}します。{選|えら}んだ{範囲|はんい}に{見本|みほん}がないときは、ほかのトピックの{見本|みほん}を{出|だ}します。') + '</p></div>';
+      '<button type="button" class="btn btn-red btn-clip btn-block" id="startBtn"' + (picked.length ? '' : ' disabled') + '><i class="fa-solid fa-play" aria-hidden="true"></i><span>' + rb('この{設定|せってい}で{始|はじ}める') + '</span></button></div>';
+    html += '</div></details>' +
+      '<p class="start-note">' + rb('サンプルなので、{見本|みほん}の{問題|もんだい}（15{問|もん}）から{出|だ}します。') + '</p>';
     view.innerHTML = html;
-    window.scrollTo(0, 0);
+    window.scrollTo(0, opt.keepScroll || 0); opt.keepScroll = 0;
   }
 
   /* ---------- 問題を解く（練習：選ぶとすぐ判定） ---------- */
   var quiz = null;
-  function startPractice() {
-    var picked = selectedTopics().map(function (x) { return plain(x.t[0]); });
-    var list = BANK.filter(function (q) { return picked.indexOf(plain(q.topic)) !== -1; });
+  function startPractice(names, order, count) {
+    names = names || selectedTopics().map(function (x) { return plain(x.t[0]); });
+    order = order || opt.order; count = count || opt.count;
+    var list = BANK.filter(function (q) { return names.indexOf(plain(q.topic)) !== -1; });
     if (!list.length) list = BANK.slice();
-    if (opt.order === 'rand') list = shuffle(list);
-    if (opt.count !== 'all') list = list.slice(0, Number(opt.count));
+    if (order === 'rand') list = shuffle(list);
+    if (count !== 'all') list = list.slice(0, Number(count));
     quiz = { list: list, i: 0, results: [] };
     saved = null;
     cutIn('START!', rb('{問題演習|もんだいえんしゅう}を{始|はじ}めます！'));
@@ -377,6 +404,14 @@
   function judge(ok) {
     var q = quiz.list[quiz.i];
     quiz.results.push(ok);
+    if (ok) {
+      combo.now++; if (combo.now > combo.best) combo.best = combo.now;
+      cutIn(combo.now >= 2 ? combo.now + ' COMBO!' : 'NICE!',
+        rb('{正解|せいかい}！' + (combo.now >= 2 ? '{連続|れんぞく}' + combo.now + '{問|もん}{正解|せいかい}です！' : 'その{調子|ちょうし}です！')), 'CORRECT!', false);
+    } else {
+      combo.now = 0;
+      cutIn('TRY AGAIN!', rb('{惜|お}しい！{下|した}の{解説|かいせつ}を{読|よ}んでみよう！'), 'CHECK THE POINT!', true);
+    }
     var last = quiz.i === quiz.list.length - 1;
     document.getElementById('expBox').innerHTML =
       '<div class="exp"><div class="exp-head"><span class="exp-badge en' + (ok ? '' : ' is-miss') + '">' + (ok ? 'CORRECT!' : 'MISS') + '</span>' +
@@ -406,6 +441,30 @@
 
   /* ---------- 模擬試験（本番と同じ 36問・60分。答えは最後にまとめて採点） ---------- */
   var mock = null, timerId = null;
+  function showMockBar(on) {
+    document.getElementById('mockBar').hidden = !on;
+    if (!on) setPanel(false);
+  }
+  function setPanel(open) {
+    var p = document.getElementById('mockPanel'), b = document.getElementById('palToggle');
+    p.hidden = !open; b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.classList.toggle('is-open', open);
+  }
+  function answeredCount() { return mock.ans.filter(function (a) { return a !== undefined; }).length; }
+  function updateMockCount() {
+    var n = answeredCount();
+    document.getElementById('mockCount').innerHTML = rb('{答|こた}えた{問題|もんだい}') + ' <b class="en">' + n + '</b> / ' + mock.list.length;
+    document.getElementById('quizBar').style.width = (n / mock.list.length * 100) + '%';
+  }
+  function renderPanel() {
+    var html = '<p class="palette-head">' + rb('{番号|ばんごう}を{押|お}すと、その{問題|もんだい}へ{移|うつ}ります') + '</p><p class="palette-sub">' + rb('{学科|がっか}') + '</p><div class="palette-grid">';
+    mock.list.forEach(function (it, k) {
+      if (k === 30) html += '</div><p class="palette-sub">' + rb('{実技|じつぎ}') + '</p><div class="palette-grid">';
+      html += '<button type="button" class="pal' + (mock.ans[k] !== undefined ? ' is-done' : '') + (k === mock.i ? ' is-now' : '') + '" data-pal="' + k + '">' + (k + 1) + '</button>';
+    });
+    html += '</div><p class="palette-legend"><span class="lg is-done"></span><span>' + rb('{答|こた}えた') + '</span><span class="lg"></span><span>' + rb('まだ') + '</span><span class="lg is-now"></span><span>' + rb('いまの{問題|もんだい}') + '</span></p>' +
+      '<button type="button" class="btn btn-red btn-clip btn-block" id="mFinish"><span>' + rb('{解答|かいとう}を{終|お}わって{採点|さいてん}する') + '</span></button>';
+    document.getElementById('mockPanel').innerHTML = html;
+  }
   function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
   function mockIntro() {
     quizMode(false); setTab('mock'); view.classList.remove('is-wide');
@@ -418,7 +477,7 @@
       '<section class="set-box"><div class="set-head"><h2>' + rb('{受|う}ける{前|まえ}に') + '</h2></div><ul class="mock-rules">' +
         '<li>' + rb('{学科|がっか}は、フロント・{企画|きかく}・{広報|こうほう}・{接客|せっきゃく}・レストランサービス・{安全衛生|あんぜんえいせい}から6{問|もん}ずつ{出|で}ます。') + '</li>' +
         '<li>' + rb('{本番|ほんばん}と{同|おな}じく、{答|こた}えはその{場|ば}では{判定|はんてい}しません。{最後|さいご}にまとめて{採点|さいてん}します。') + '</li>' +
-        '<li>' + rb('{前|まえ}の{問題|もんだい}にもどって、{答|こた}えを{変|か}えられます。') + '</li>' +
+        '<li>' + rb('{前|まえ}の{問題|もんだい}にもどって、{答|こた}えを{変|か}えられます。{画面|がめん}の{上|うえ}の「{一覧|いちらん}・{採点|さいてん}」で、{答|こた}えた{問題|もんだい}を{確|たし}かめたり、{採点|さいてん}したりできます。') + '</li>' +
         '<li>' + rb('60{分|ぷん}たつと、{自動|じどう}で{終|お}わって{採点|さいてん}します。') + '</li>' +
         '<li>' + rb('{合格|ごうかく}するには、{学科|がっか}20{問|もん}{以上|いじょう}・{実技|じつぎ}4{問|もん}{以上|いじょう}の{正解|せいかい}が{必要|ひつよう}です。') + '</li>' +
       '</ul></section>' +
@@ -462,29 +521,21 @@
     var item = mock.list[mock.i], q = item.q, n = mock.list.length;
     var isJ = q.subj === '{実技|じつぎ}';
     document.getElementById('quizWhere').innerHTML = '<span>' + rb('{模擬試験|もぎしけん}・{宿泊|しゅくはく}') + '</span><br><span>' + rb((isJ ? '{実技|じつぎ}' : '{学科|がっか}') + ' ' + (mock.i + 1) + ' / ' + n + '{問|もん}') + '</span>';
-    document.getElementById('quizBar').style.width = (mock.ans.filter(function (a) { return a !== undefined; }).length / n * 100) + '%';
     var html = '<div class="q-card"><div class="q-tags"><span class="q-tag is-red">' + rb(q.subj) + '</span><span class="q-tag en">Q' + (mock.i + 1) + '</span></div>' +
       '<p class="q-text">' + rb(q.q) + '</p></div><div class="choices">';
     item.order.forEach(function (orig, k) {
       html += '<button type="button" class="choice-btn' + (mock.ans[mock.i] === orig ? ' is-picked' : '') + '" data-mch="' + orig + '"><span class="choice-no en">' + LABELS[k] + '</span><span class="choice-txt">' + rb(q.c[orig]) + '</span></button>';
     });
     html += '</div><div class="mock-nav">' +
-      '<button type="button" class="btn btn-gray" id="mPrev"' + (mock.i === 0 ? ' disabled' : '') + '><span>' + rb('← {前|まえ}へ') + '</span></button>' +
-      '<button type="button" class="btn btn-black" id="mNext"' + (mock.i === n - 1 ? ' disabled' : '') + '><span>' + rb('{次|つぎ}へ →') + '</span></button></div>' +
-      '<section class="palette"><p class="palette-head">' + rb('{問題|もんだい}の{一覧|いちらん}（{押|お}すとその{問題|もんだい}へ）') + '</p><div class="palette-grid">';
-    mock.list.forEach(function (it, k) {
-      if (k === 30) html += '</div><p class="palette-sub">' + rb('{実技|じつぎ}') + '</p><div class="palette-grid">';
-      if (k === 0) html += '';
-      html += '<button type="button" class="pal' + (mock.ans[k] !== undefined ? ' is-done' : '') + (k === mock.i ? ' is-now' : '') + '" data-pal="' + k + '">' + (k + 1) + '</button>';
-    });
-    var answered = mock.ans.filter(function (a) { return a !== undefined; }).length;
-    html += '</div><p class="palette-count">' + rb('{答|こた}えた{問題|もんだい}：') + '<b>' + answered + '</b> / ' + n + '</p></section>' +
-      '<button type="button" class="btn btn-red btn-clip btn-block" id="mFinish"><span>' + rb('{解答|かいとう}を{終|お}わって{採点|さいてん}する') + '</span></button>';
+      '<button type="button" class="btn btn-gray" id="mPrev"' + (mock.i === 0 ? ' disabled' : '') + '><span>' + rb('← {前|まえ}の{問題|もんだい}') + '</span></button>' +
+      '<button type="button" class="btn btn-black" id="mNext"' + (mock.i === n - 1 ? ' disabled' : '') + '><span>' + rb('{次|つぎ}の{問題|もんだい} →') + '</span></button></div>' +
+      (mock.i === n - 1 ? '<p class="mock-last">' + rb('これが{最後|さいご}の{問題|もんだい}です。{答|こた}え{終|お}わったら、{上|うえ}の「{一覧|いちらん}・{採点|さいてん}」を{押|お}して{採点|さいてん}してください。') + '</p>' : '');
+    showMockBar(true); setPanel(false); renderPanel(); updateMockCount();
     view.innerHTML = html;
     window.scrollTo(0, 0);
   }
   function mockResult() {
-    stopTimer();
+    stopTimer(); showMockBar(false);
     var g = 0, j = 0, catScore = {};
     mock.list.forEach(function (it, k) {
       var ok = mock.ans[k] === it.q.a;
@@ -529,11 +580,11 @@
   /* ---------- 操作 ---------- */
   document.addEventListener('change', function (e) {
     var t = e.target;
-    if (t.matches('[data-topic]')) { opt.sel[t.getAttribute('data-topic')] = t.checked; return practice(); }
+    if (t.matches('[data-topic]')) { opt.sel[t.getAttribute('data-topic')] = t.checked; opt.keepScroll = window.scrollY; return practice(); }
     if (t.matches('[data-cat]')) {
       var ci = Number(t.getAttribute('data-cat'));
       CATS[ci].topics.forEach(function (_, ti) { opt.sel[topicKey(ci, ti)] = t.checked; });
-      return practice();
+      opt.keepScroll = window.scrollY; return practice();
     }
   });
   document.addEventListener('click', function (e) {
@@ -553,12 +604,19 @@
     if (t.closest('#selAll')) {
       var all = selectedTopics().length === CATS.reduce(function (a, c) { return a + c.topics.length; }, 0);
       CATS.forEach(function (c, ci) { c.topics.forEach(function (_, ti) { opt.sel[topicKey(ci, ti)] = !all; }); });
-      return practice();
+      opt.keepScroll = window.scrollY; return practice();
     }
-    var od = t.closest('[data-order]'); if (od) { opt.order = od.getAttribute('data-order'); return practice(); }
-    var ct = t.closest('[data-count]'); if (ct) { var v = ct.getAttribute('data-count'); opt.count = v === 'all' ? 'all' : Number(v); return practice(); }
-    if (t.closest('#unans')) { opt.unanswered = !opt.unanswered; return practice(); }
+    var od = t.closest('[data-order]'); if (od) { opt.order = od.getAttribute('data-order'); opt.keepScroll = window.scrollY; return practice(); }
+    var ct = t.closest('[data-count]'); if (ct) { var v = ct.getAttribute('data-count'); opt.count = v === 'all' ? 'all' : Number(v); opt.keepScroll = window.scrollY; return practice(); }
+    if (t.closest('#unans')) { opt.unanswered = !opt.unanswered; opt.keepScroll = window.scrollY; return practice(); }
     if (t.closest('#startBtn')) return startPractice();
+    var qk = t.closest('[data-quick]');
+    if (qk) {
+      var key = qk.getAttribute('data-quick');
+      var names = [];
+      CATS.forEach(function (c, ci) { if (key === 'rec' || String(ci) === key) c.topics.forEach(function (tp) { names.push(plain(tp[0])); }); });
+      return startPractice(names, 'rand', 10);
+    }
     if (t.closest('#resumeBtn') && saved) { quiz = saved; saved = null; return question(); }
     if (t.closest('[data-retry]')) {
       var miss = quiz.list.filter(function (_, k) { return !quiz.results[k]; });
@@ -587,17 +645,15 @@
     if (mc && mock) {
       mock.ans[mock.i] = Number(mc.getAttribute('data-mch'));
       document.querySelectorAll('[data-mch]').forEach(function (b) { b.classList.toggle('is-picked', b === mc); });
-      var pal = document.querySelector('[data-pal="' + mock.i + '"]'); if (pal) pal.classList.add('is-done');
-      var answered = mock.ans.filter(function (a) { return a !== undefined; }).length;
-      document.querySelector('.palette-count b').textContent = answered;
-      document.getElementById('quizBar').style.width = (answered / mock.list.length * 100) + '%';
+      renderPanel(); updateMockCount();
       return;
     }
     if (t.closest('#mPrev') && mock) { mock.i--; return mockQuestion(); }
     if (t.closest('#mNext') && mock) { mock.i++; return mockQuestion(); }
     var pl = t.closest('[data-pal]'); if (pl && mock) { mock.i = Number(pl.getAttribute('data-pal')); return mockQuestion(); }
+    if (t.closest('#palToggle') && mock) return setPanel(document.getElementById('mockPanel').hidden);
     if (t.closest('#mFinish') && mock) {
-      var rest = mock.list.length - mock.ans.filter(function (a) { return a !== undefined; }).length;
+      var rest = mock.list.length - answeredCount();
       if (confirm(rest ? 'まだ答えていない問題が ' + rest + ' 問あります。採点しますか？' : '採点しますか？')) return mockResult();
       return;
     }
@@ -606,6 +662,8 @@
       if (confirm('問題をやめますか？（「続きから始める」で、この問題から再開できます）')) { saved = quiz; practice(); }
     }
   });
+
+  document.addEventListener('toggle', function (e) { if (e.target.id === 'adv') opt.adv = e.target.open; }, true);
 
   document.addEventListener('DOMContentLoaded', function () {
     RZ.initFurigana();
