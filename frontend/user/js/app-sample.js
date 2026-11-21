@@ -296,16 +296,25 @@
     });
     html += '</div>';
 
-    // ② すべてのカテゴリから解く
-    var allN = CATS.reduce(function (a, c) { return a + c.topics.length; }, 0);
+    // ② すべてのカテゴリから解く（本番と同じ36問：学科は5カテゴリ×6問・実技は判断3問・計画立案3問）
     html += '<h2 class="quick-head"><span class="quick-no en">2</span><span>' + rb('すべてのカテゴリから{解|と}く') + '</span></h2>' +
-      '<button type="button" class="quick-rec" data-quick="all"><span class="quick-rec-tag en">ALL CATEGORIES</span>' +
-      '<span class="quick-rec-title">' + rb('ぜんぶのトピックから1{問|もん}ずつ（' + allN + '{問|もん}）') + '</span>' +
-      '<span class="quick-rec-desc">' + rb('フロントから{計画立案|けいかくりつあん}まで、{順番|じゅんばん}に{出|だ}します') + '</span>' +
+      '<button type="button" class="quick-rec" data-quick="all"><span class="quick-rec-tag en">36 QUESTIONS</span>' +
+      '<span class="quick-rec-title">' + rb('{本番|ほんばん}と{同|おな}じ36{問|もん}（{学科|がっか}30・{実技|じつぎ}6）') + '</span>' +
+      '<span class="quick-rec-desc">' + rb('カテゴリの{順番|じゅんばん}に{出|だ}します。{時間|じかん}の{制限|せいげん}はありません') + '</span>' +
       '<span class="quick-rec-go"><i class="fa-solid fa-play" aria-hidden="true"></i></span></button>' +
       '<p class="start-note">' + rb('サンプルなので、{見本|みほん}の{問題|もんだい}（15{問|もん}）をくり{返|かえ}して{出|だ}します。') + '</p>';
     view.innerHTML = html;
     window.scrollTo(0, 0);
+  }
+  // 本番と同じ36問：カテゴリの順番どおりに、そのカテゴリの問題からランダムに
+  var ALL_SPEC = [6, 6, 6, 6, 6, 3, 3]; // CATS の順（学科5カテゴリ・判断・計画立案）
+  function buildAll36() {
+    var list = [];
+    CATS.forEach(function (c, ci) {
+      var pool = shuffle(BANK.filter(function (q) { return q.cat === c.name; }));
+      for (var k = 0; k < ALL_SPEC[ci]; k++) list.push(pool[k % pool.length]);
+    });
+    return list;
   }
   // トピックの順番どおりに、1トピックから per 問（トピックの中はランダム）
   function buildPractice(cats, per) {
@@ -537,7 +546,7 @@
     var qk = t.closest('[data-quick]');
     if (qk) {
       var key = qk.getAttribute('data-quick');
-      var list = key === 'all' ? buildPractice(CATS, 1) : buildPractice([CATS[Number(key)]], PER_TOPIC);
+      var list = key === 'all' ? buildAll36() : buildPractice([CATS[Number(key)]], PER_TOPIC);
       quiz = { list: list, i: 0, results: [] };
       saved = null;
       cutIn('START!', rb('{問題演習|もんだいえんしゅう}を{始|はじ}めます！'));
