@@ -34,8 +34,6 @@
     { subj: '{実技|じつぎ}', name: '{計画立案|けいかくりつあん}', topics: [
       ['{作業|さぎょう}の{順番|じゅんばん}・{段取|だんど}り', 21, 2, 1], ['{時間|じかん}と{人|ひと}の{割|わ}りふり', 20, 0, 0]] }
   ];
-  // STAGE ごとの数（500問を EASY 150・NORMAL 200・HARD 150 に分ける。学科 125/167/125・実技 25/33/25）
-  var STAGE_RATE = { '{学科|がっか}': [125 / 417, 167 / 417, 125 / 417], '{実技|じつぎ}': [25 / 83, 33 / 83, 25 / 83] };
 
   // 見本の問題（すべて3択。a は正解の番号 0〜2）
   var BANK = [
@@ -127,21 +125,20 @@
   }
   function fieldOf(id) { return FIELDS.filter(function (x) { return x.id === id; })[0]; }
   var LABELS = ['1', '2', '3', '4', '5'];
-  var STAGES = [['EASY', '{基礎|きそ}'], ['NORMAL', '{本番|ほんばん}レベル'], ['HARD', '{応用|おうよう}']];
-  var stageNow = 0;
   var combo = { now: 3, best: 12 }; // 連続正解（問題演習だけで数える。見本の数字から始める）
   var current = 'accommodation';
 
   /* ---------- ① ホーム（ダッシュボード） ---------- */
   var DASH = {
-    accommodation: { streak: 15, rate: 70, solved: 48, review: 10, stageRate: 30,
+    accommodation: { streak: 15, rate: 70, solved: 48, review: 10,
+      mocks: [['11/10', 15, 3], ['11/13', 18, 3], ['11/16', 19, 4], ['11/18', 21, 4], ['{昨日|きのう}', 22, 5]],
       mock: { gakka: 22, jitsugi: 5 },
       week: [0, 5, 0, 0, 10, 0, 5],
       cats: [['フロント', 80], ['{企画|きかく}・{広報|こうほう}', 66], ['{接客|せっきゃく}', 75], ['レストランサービス', 58], ['{安全衛生|あんぜんえいせい}・その{他|た}', 70], ['{実技|じつぎ}', 67]],
-      hist: [['mock', 'EASY {模擬試験|もぎしけん}（36{問|もん}）', '{昨日|きのう} 21:15', '{学科|がっか}73%・{実技|じつぎ}83%'], ['drill', '{学科|がっか}・フロント（10{問|もん}）', '3{日前|にちまえ} 20:05', '8/10']] }
+      hist: [['mock', '{模擬試験|もぎしけん}（36{問|もん}）', '{昨日|きのう} 21:15', '{学科|がっか}73%・{実技|じつぎ}83%'], ['drill', '{学科|がっか}・フロント（10{問|もん}）', '3{日前|にちまえ} 20:05', '8/10']] }
   };
   var DAYS = ['{木|もく}', '{金|きん}', '{土|ど}', '{日|にち}', '{月|げつ}', '{火|か}', '{今日|きょう}'];
-  var STG = [['EASY', '{現場|げんば}の{言葉|ことば}と{基本|きほん}のルール'], ['NORMAL', '{本番|ほんばん}と{同|おな}じレベルで{練習|れんしゅう}'], ['HARD', '{応用|おうよう}{問題|もんだい}で{仕上|しあ}げ']];
+
   function pct(n, d) { return Math.round(n / d * 100); }
 
   function home() {
@@ -194,21 +191,17 @@
         '<h3>' + rb('{模擬試験|もぎしけん}に{挑戦|ちょうせん}') + '</h3><p>' + rb('{本番|ほんばん}と{同|おな}じ36{問|もん}・60{分|ぷん}で{力|ちから}を{確|たし}かめる') + '</p></button>' +
       '</div></section>';
 
-    h += '<section class="dash-2col"><div class="panel-w"><div class="panel-head"><div><span class="dash-sec-en">STAGE PROGRESS</span><h2 class="dash-sec-title">' + rb('{合格|ごうかく}までの STAGE') + '</h2></div>' +
-      '<span class="panel-chip">STAGE 0' + (stageNow + 1) + '</span></div>';
-    STG.forEach(function (s, k) {
-      if (k < stageNow) {
-        h += '<div class="stg"><div class="stg-top"><span class="stg-tag">STAGE 0' + (k + 1) + ' // ' + s[0] + '</span><span class="stg-state"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> ' + rb('クリア{済|ず}み') + '</span></div>' +
-          '<p class="stg-name">' + rb(s[1]) + '</p><div class="stg-bar is-done"><span style="width:100%"></span></div></div>';
-      } else if (k === stageNow) {
-        h += '<div class="stg is-now"><div class="stg-top"><span class="stg-tag is-red">STAGE 0' + (k + 1) + ' // ' + s[0] + '（' + rb('{挑戦中|ちょうせんちゅう}') + '）</span><span class="en">' + d.stageRate + '%</span></div>' +
-          '<p class="stg-name">' + rb(s[1]) + '</p><div class="stg-bar"><span style="width:' + d.stageRate + '%"></span></div>' +
-          '<p class="stg-note">' + rb(k < 2 ? s[0] + ' の{模擬試験|もぎしけん}に{合格|ごうかく}すると STAGE 0' + (k + 2) + ' が{解|と}けるようになります（{基準|きじゅん}は③で{決|き}めます）' : 'HARD の{模擬試験|もぎしけん}に{合格|ごうかく}して{本番|ほんばん}へ！') + '</p></div>';
-      } else {
-        h += '<div class="stg is-locked"><div class="stg-top"><span class="stg-tag is-gray">STAGE 0' + (k + 1) + ' // ' + s[0] + '</span><span class="stg-state is-gray"><i class="fa-solid fa-lock" aria-hidden="true"></i> STAGE 0' + k + rb(' クリアで{解放|かいほう}') + '</span></div>' +
-          '<p class="stg-name">' + rb(s[1]) + '</p></div>';
-      }
+    h += '<section class="dash-2col"><div class="panel-w"><div class="panel-head"><div><span class="dash-sec-en">MOCK EXAM HISTORY</span><h2 class="dash-sec-title">' + rb('{模擬試験|もぎしけん}の{記録|きろく}') + '</h2></div>' +
+      '<span class="panel-chip">' + d.mocks.length + ' TIMES</span></div>' +
+      '<p class="mh-legend"><span class="mh-key is-g"></span><span>' + rb('{学科|がっか}') + '</span><span class="mh-key is-j"></span><span>' + rb('{実技|じつぎ}') + '</span><span class="mh-key is-line"></span><span>' + rb('{合格|ごうかく}ライン 65%') + '</span></p><div class="mh">';
+    d.mocks.forEach(function (m) {
+      var g = pct(m[1], 30), j = pct(m[2], 6), ok = g >= 65 && j >= 65;
+      h += '<div class="mh-row"><span class="mh-date">' + rb(m[0]) + '</span><div class="mh-bars">' +
+        '<div class="mh-bar"><span class="is-g" style="width:' + g + '%"></span><em>' + g + '%</em></div>' +
+        '<div class="mh-bar"><span class="is-j" style="width:' + j + '%"></span><em>' + j + '%</em></div>' +
+        '<i class="mh-line" aria-hidden="true"></i></div><span class="mh-res' + (ok ? ' is-ok' : '') + '">' + rb(ok ? '{合格|ごうかく}' : '{不合格|ふごうかく}') + '</span></div>';
     });
+    h += '</div><button type="button" class="btn btn-red btn-clip btn-block mh-btn" data-go="mock"><i class="fa-solid fa-stopwatch" aria-hidden="true"></i><span>' + rb('{模擬試験|もぎしけん}を{受|う}ける') + '</span></button>';
     var total = d.week.reduce(function (a, b) { return a + b; }, 0);
     h += '</div><div class="panel-d"><div class="panel-head"><div><span class="dash-sec-en">STUDY ACTIVITY</span><h2 class="dash-sec-title">' + rb('この1{週間|しゅうかん}の{学習|がくしゅう}') + '</h2></div>' +
       '<span class="panel-chip-ja">' + rb('{今週|こんしゅう}：') + total + rb('{問|もん}') + '</span></div>' +
@@ -269,126 +262,75 @@
   }
 
   /* ---------- 問題演習の設定 ---------- */
-  var opt = { sel: {}, order: 'seq', unanswered: false, count: 10 };
-  var COUNTS = [['all', '{無制限|むせいげん}'], [10, '10'], [25, '25'], [50, '50'], [75, '75'], [100, '100']];
   var saved = null; // 途中でやめた演習（「続きから」用）
 
-  // STAGE ごとの数：科目の合計がちょうど 125/167/125（学科）・25/33/25（実技）になるように、端数の大きい順に1問ずつ足す
-  var STAGE_TARGET = { '{学科|がっか}': [125, 167, 125], '{実技|じつぎ}': [25, 33, 25] };
-  var stageMap = {};
-  function buildStageMap() {
-    stageMap = {};
-    Object.keys(STAGE_TARGET).forEach(function (subj) {
-      var items = [];
-      CATS.forEach(function (c) { if (c.subj === subj) c.topics.forEach(function (t) { var x = t[1] * STAGE_RATE[subj][stageNow]; items.push({ t: t, n: Math.floor(x), r: x - Math.floor(x) }); }); });
-      var rest = STAGE_TARGET[subj][stageNow] - items.reduce(function (a, i) { return a + i.n; }, 0);
-      items.slice().sort(function (a, b) { return b.r - a.r; }).slice(0, rest).forEach(function (i) { i.n++; });
-      items.forEach(function (i) { stageMap[i.t[0]] = i.n; });
-    });
-  }
-  function stageCount(cat, n, t) { return stageMap[t] != null ? stageMap[t] : Math.round(n * STAGE_RATE[cat.subj][stageNow]); }
-  function topicKey(ci, ti) { return ci + '-' + ti; }
-  function selectedTopics() {
-    var list = [];
-    CATS.forEach(function (c, ci) { c.topics.forEach(function (t, ti) { if (opt.sel[topicKey(ci, ti)]) list.push({ cat: c, t: t }); }); });
-    return list;
-  }
+
+  var PER_TOPIC = 6;                      // 1トピックから出す数（トピックの問題からランダム）
+  var CAT_RATE = [80, 66, 75, 58, 70, 67, 67]; // 見本の正答率（本物は答えの記録から計算する）
   function catStat(c) {
-    var tot = 0, done = 0, miss = 0;
-    c.topics.forEach(function (t) { var n = stageCount(c, t[1], t[0]); tot += n; done += Math.min(t[2], n); miss += t[3]; });
-    return { tot: tot, done: done, miss: miss };
+    var n = 0, miss = 0;
+    c.topics.forEach(function (t) { n += Math.min(PER_TOPIC, t[1]); miss += t[3]; });
+    return { n: n, miss: miss };
   }
   function practice() {
     quizMode(false); setTab('practice'); view.classList.remove('is-wide');
     var html = '<h1 class="app-title"><span class="en">PRACTICE</span>' + rb('{問題演習|もんだいえんしゅう}（{宿泊|しゅくはく}）') + '</h1>' +
-      '<div class="stage-tabs">' + STAGES.map(function (s, k) {
-        return '<button type="button" class="stage-tab' + (k === stageNow ? ' is-active' : '') + '"' + (k > stageNow ? ' disabled' : '') + ' data-stage="' + k + '">' +
-          (k > stageNow ? '<i class="fa-solid fa-lock" aria-hidden="true"></i> ' : '') + s[0] + '<small>' + rb(s[1]) + '</small></button>';
-      }).join('') + '</div>';
+      '<p class="app-sub">' + rb('{宿泊|しゅくはく}の500{問|もん}から{出|だ}します') + '</p>';
 
-    // 続きから
     if (saved) {
       html += '<button type="button" class="quick-resume" id="resumeBtn"><i class="fa-solid fa-play" aria-hidden="true"></i><span><b>' + rb('{続|つづ}きから') + '</b>' +
         rb('（' + (saved.i + 1) + ' / ' + saved.list.length + '{問目|もんめ}から）') + '</span></button>';
     }
-    // おすすめ
-    html += '<button type="button" class="quick-rec" data-quick="rec"><span class="quick-rec-tag en">RECOMMEND</span>' +
-      '<span class="quick-rec-title">' + rb('おすすめの10{問|もん}') + '</span>' +
-      '<span class="quick-rec-desc">' + rb('まだ{解|と}いていない{問題|もんだい}から、{自動|じどう}で{選|えら}びます') + '</span>' +
-      '<span class="quick-rec-go"><i class="fa-solid fa-play" aria-hidden="true"></i></span></button>';
 
-    // カテゴリ
-    html += '<h2 class="quick-head">' + rb('カテゴリを{選|えら}んで{解|と}く') + '<small>' + rb('（{押|お}すと10{問|もん}{始|はじ}まります）') + '</small></h2>';
+    // ① カテゴリを選んで解く
+    html += '<h2 class="quick-head"><span class="quick-no en">1</span><span>' + rb('カテゴリを{選|えら}んで{解|と}く') + '</span></h2>' +
+      '<p class="quick-desc">' + rb('カテゴリの{中|なか}のトピックを{順番|じゅんばん}に、1つのトピックから' + PER_TOPIC + '{問|もん}ずつ{出|だ}します。') + '</p>';
     var lastSubj = '';
     CATS.forEach(function (c, ci) {
       if (c.subj !== lastSubj) { if (lastSubj) html += '</div>'; html += '<p class="set-subj">' + rb(c.subj) + '</p><div class="quick-cats">'; lastSubj = c.subj; }
-      var st = catStat(c);
+      var st = catStat(c), rate = CAT_RATE[ci];
       html += '<button type="button" class="quick-cat" data-quick="' + ci + '"><span class="quick-cat-name">' + rb(c.name) + '</span>' +
-        '<span class="quick-cat-num">' + st.done + ' / ' + st.tot + rb('{問|もん}') + (st.miss ? '<b>' + rb('まちがい ') + st.miss + '</b>' : '') + '</span>' +
-        '<span class="quick-cat-bar"><span style="width:' + Math.round(st.done / st.tot * 100) + '%"></span></span></button>';
+        '<span class="quick-cat-num">' + rb(c.topics.length + 'トピック・' + st.n + '{問|もん}') + '</span>' +
+        '<span class="quick-cat-rate">' + rb('{正答率|せいとうりつ}') + ' <b class="' + (rate < 65 ? 'is-low' : '') + '">' + rate + '%</b>' + (st.miss ? '<em>' + rb('まちがい ') + st.miss + '</em>' : '') + '</span>' +
+        '<span class="quick-cat-bar"><span class="' + (rate < 65 ? 'is-low' : '') + '" style="width:' + rate + '%"></span></span></button>';
     });
     html += '</div>';
 
-    // くわしく選ぶ
-    html += '<details class="adv"' + (opt.adv ? ' open' : '') + ' id="adv"><summary><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>' + rb('くわしく{選|えら}ぶ（トピック・{順番|じゅんばん}・{問題|もんだい}の{数|かず}）') + '</span></summary><div class="adv-body">';
-    html += '<section class="set-box"><div class="set-head"><h2>' + rb('{出題範囲|しゅつだいはんい}') + '</h2>' +
-      '<button type="button" class="set-all" id="selAll">' + rb('すべて{選択|せんたく}') + '</button></div>';
-    lastSubj = '';
-    CATS.forEach(function (c, ci) {
-      if (c.subj !== lastSubj) { html += '<p class="set-subj">' + rb(c.subj) + '</p>'; lastSubj = c.subj; }
-      var st = catStat(c), on = 0;
-      c.topics.forEach(function (t, ti) { if (opt.sel[topicKey(ci, ti)]) on++; });
-      html += '<details class="rng"' + (on ? ' open' : '') + '><summary><label class="rng-cat" onclick="event.stopPropagation()">' +
-        '<input type="checkbox" data-cat="' + ci + '"' + (on === c.topics.length ? ' checked' : '') + '><span>' + rb(c.name) + '</span></label>' +
-        '<span class="rng-meta">' + st.done + ' / ' + st.tot + '</span></summary><div class="rng-topics">';
-      c.topics.forEach(function (t, ti) {
-        var n = stageCount(c, t[1], t[0]); var d = Math.min(t[2], n);
-        html += '<label class="rng-topic"><input type="checkbox" data-topic="' + topicKey(ci, ti) + '"' + (opt.sel[topicKey(ci, ti)] ? ' checked' : '') + '>' +
-          '<span class="rng-name">' + rb(t[0]) + '</span><span class="rng-num">' + d + ' / ' + n + '</span>' +
-          '<span class="rng-bar"><span style="width:' + Math.round(d / n * 100) + '%"></span></span></label>';
-      });
-      html += '</div></details>';
-    });
-    html += '</section><section class="set-box"><div class="set-head"><h2>' + rb('{出|だ}し{方|かた}') + '</h2></div>' +
-      '<div class="set-row"><span>' + rb('{順番|じゅんばん}') + '</span><div class="seg">' +
-        '<button type="button" data-order="seq" class="' + (opt.order === 'seq' ? 'is-on' : '') + '">' + rb('{順番|じゅんばん}どおり') + '</button>' +
-        '<button type="button" data-order="rand" class="' + (opt.order === 'rand' ? 'is-on' : '') + '">ランダム</button></div></div>' +
-      '<div class="set-row"><span>' + rb('{解|と}いていない{問題|もんだい}だけ') + '</span><button type="button" class="switch' + (opt.unanswered ? ' is-on' : '') + '" id="unans" aria-pressed="' + opt.unanswered + '"><span></span></button></div>' +
-      '<div class="set-row is-col"><span>' + rb('{問題|もんだい}の{数|かず}') + '</span><div class="seg is-wrap">' +
-        COUNTS.map(function (c) { return '<button type="button" data-count="' + c[0] + '" class="' + (String(opt.count) === String(c[0]) ? 'is-on' : '') + '">' + rb(c[1]) + '</button>'; }).join('') +
-      '</div></div></section>';
-    var picked = selectedTopics();
-    var avail = picked.reduce(function (a, x) { return a + stageCount(x.cat, x.t[1], x.t[0]); }, 0);
-    var left = picked.reduce(function (a, x) { var n = stageCount(x.cat, x.t[1], x.t[0]); return a + n - Math.min(x.t[2], n); }, 0);
-    html += '<div class="start-box"><p class="start-info">' + (picked.length
-        ? rb('{選|えら}んだトピック：') + '<b>' + picked.length + '</b>　' + rb('{問題|もんだい}：') + '<b>' + (opt.unanswered ? left : avail) + '</b>' + rb('{問|もん}')
-        : rb('{出題範囲|しゅつだいはんい}を{選|えら}んでください')) + '</p>' +
-      '<button type="button" class="btn btn-red btn-clip btn-block" id="startBtn"' + (picked.length ? '' : ' disabled') + '><i class="fa-solid fa-play" aria-hidden="true"></i><span>' + rb('この{設定|せってい}で{始|はじ}める') + '</span></button></div>';
-    html += '</div></details>' +
-      '<p class="start-note">' + rb('サンプルなので、{見本|みほん}の{問題|もんだい}（15{問|もん}）から{出|だ}します。') + '</p>';
+    // ② すべてのカテゴリから解く
+    var allN = CATS.reduce(function (a, c) { return a + c.topics.length; }, 0);
+    html += '<h2 class="quick-head"><span class="quick-no en">2</span><span>' + rb('すべてのカテゴリから{解|と}く') + '</span></h2>' +
+      '<button type="button" class="quick-rec" data-quick="all"><span class="quick-rec-tag en">ALL CATEGORIES</span>' +
+      '<span class="quick-rec-title">' + rb('ぜんぶのトピックから1{問|もん}ずつ（' + allN + '{問|もん}）') + '</span>' +
+      '<span class="quick-rec-desc">' + rb('フロントから{計画立案|けいかくりつあん}まで、{順番|じゅんばん}に{出|だ}します') + '</span>' +
+      '<span class="quick-rec-go"><i class="fa-solid fa-play" aria-hidden="true"></i></span></button>' +
+      '<p class="start-note">' + rb('サンプルなので、{見本|みほん}の{問題|もんだい}（15{問|もん}）をくり{返|かえ}して{出|だ}します。') + '</p>';
     view.innerHTML = html;
-    window.scrollTo(0, opt.keepScroll || 0); opt.keepScroll = 0;
+    window.scrollTo(0, 0);
+  }
+  // トピックの順番どおりに、1トピックから per 問（トピックの中はランダム）
+  function buildPractice(cats, per) {
+    var list = [];
+    cats.forEach(function (c) {
+      c.topics.forEach(function (t) {
+        var want = Math.min(per, t[1]);
+        var pool = shuffle(BANK.filter(function (q) { return plain(q.topic) === plain(t[0]); }));
+        if (!pool.length) pool = shuffle(BANK.filter(function (q) { return q.cat === c.name; })); // サンプルで、そのトピックの見本が無いとき
+        for (var k = 0; k < want; k++) {
+          var q = pool[k % pool.length];
+          list.push(Object.assign({}, q, { topic: t[0] }));
+        }
+      });
+    });
+    return list;
   }
 
   /* ---------- 問題を解く（練習：選ぶとすぐ判定） ---------- */
   var quiz = null;
-  function startPractice(names, order, count) {
-    names = names || selectedTopics().map(function (x) { return plain(x.t[0]); });
-    order = order || opt.order; count = count || opt.count;
-    var list = BANK.filter(function (q) { return names.indexOf(plain(q.topic)) !== -1; });
-    if (!list.length) list = BANK.slice();
-    if (order === 'rand') list = shuffle(list);
-    if (count !== 'all') list = list.slice(0, Number(count));
-    quiz = { list: list, i: 0, results: [] };
-    saved = null;
-    cutIn('START!', rb('{問題演習|もんだいえんしゅう}を{始|はじ}めます！'));
-    setTimeout(question, 700);
-  }
   function question() {
     quizMode(true); view.classList.remove('is-wide');
     var q = quiz.list[quiz.i];
     var n = quiz.list.length;
-    document.getElementById('quizWhere').innerHTML = '<span>' + rb('{宿泊|しゅくはく}・' + STAGES[stageNow][0]) + '</span><br><span>' + rb(q.subj + '・' + q.cat + '・' + q.topic) + '</span>';
+    document.getElementById('quizWhere').innerHTML = '<span>' + rb('{宿泊|しゅくはく}・{問題演習|もんだいえんしゅう}') + '</span><br><span>' + rb(q.subj + '・' + q.cat + '・' + q.topic) + '</span>';
     document.getElementById('quizNum').textContent = (quiz.i + 1) + ' / ' + n;
     document.getElementById('quizBar').style.width = (quiz.i / n * 100) + '%';
     q.order = shuffle(q.c.map(function (_, k) { return k; }));
@@ -468,7 +410,7 @@
   function stopTimer() { if (timerId) { clearInterval(timerId); timerId = null; } }
   function mockIntro() {
     quizMode(false); setTab('mock'); view.classList.remove('is-wide');
-    var html = '<h1 class="app-title"><span class="en">MOCK EXAM</span>' + rb('{模擬試験|もぎしけん}（{宿泊|しゅくはく}・' + STAGES[stageNow][0] + '）') + '</h1>' +
+    var html = '<h1 class="app-title"><span class="en">MOCK EXAM</span>' + rb('{模擬試験|もぎしけん}（{宿泊|しゅくはく}）') + '</h1>' +
       '<div class="mock-spec">' +
         '<div><span>' + rb('{問題数|もんだいすう}') + '</span><b>36<small>' + rb('{問|もん}') + '</small></b><em>' + rb('{学科|がっか}30・{実技|じつぎ}6') + '</em></div>' +
         '<div><span>' + rb('{時間|じかん}') + '</span><b>60<small>' + rb('{分|ぷん}') + '</small></b><em>' + rb('{本番|ほんばん}と{同|おな}じ') + '</em></div>' +
@@ -578,15 +520,6 @@
   }
 
   /* ---------- 操作 ---------- */
-  document.addEventListener('change', function (e) {
-    var t = e.target;
-    if (t.matches('[data-topic]')) { opt.sel[t.getAttribute('data-topic')] = t.checked; opt.keepScroll = window.scrollY; return practice(); }
-    if (t.matches('[data-cat]')) {
-      var ci = Number(t.getAttribute('data-cat'));
-      CATS[ci].topics.forEach(function (_, ti) { opt.sel[topicKey(ci, ti)] = t.checked; });
-      opt.keepScroll = window.scrollY; return practice();
-    }
-  });
   document.addEventListener('click', function (e) {
     var t = e.target;
     var go = t.closest('[data-go]');
@@ -601,21 +534,14 @@
       if (name === 'mypage') return alert('マイページ（パスワードの変更・分野の追加など）は、あとで作ります。');
       return alert('この機能は、② 〜 ④ で作ります。');
     }
-    if (t.closest('#selAll')) {
-      var all = selectedTopics().length === CATS.reduce(function (a, c) { return a + c.topics.length; }, 0);
-      CATS.forEach(function (c, ci) { c.topics.forEach(function (_, ti) { opt.sel[topicKey(ci, ti)] = !all; }); });
-      opt.keepScroll = window.scrollY; return practice();
-    }
-    var od = t.closest('[data-order]'); if (od) { opt.order = od.getAttribute('data-order'); opt.keepScroll = window.scrollY; return practice(); }
-    var ct = t.closest('[data-count]'); if (ct) { var v = ct.getAttribute('data-count'); opt.count = v === 'all' ? 'all' : Number(v); opt.keepScroll = window.scrollY; return practice(); }
-    if (t.closest('#unans')) { opt.unanswered = !opt.unanswered; opt.keepScroll = window.scrollY; return practice(); }
-    if (t.closest('#startBtn')) return startPractice();
     var qk = t.closest('[data-quick]');
     if (qk) {
       var key = qk.getAttribute('data-quick');
-      var names = [];
-      CATS.forEach(function (c, ci) { if (key === 'rec' || String(ci) === key) c.topics.forEach(function (tp) { names.push(plain(tp[0])); }); });
-      return startPractice(names, 'rand', 10);
+      var list = key === 'all' ? buildPractice(CATS, 1) : buildPractice([CATS[Number(key)]], PER_TOPIC);
+      quiz = { list: list, i: 0, results: [] };
+      saved = null;
+      cutIn('START!', rb('{問題演習|もんだいえんしゅう}を{始|はじ}めます！'));
+      return setTimeout(question, 700);
     }
     if (t.closest('#resumeBtn') && saved) { quiz = saved; saved = null; return question(); }
     if (t.closest('[data-retry]')) {
@@ -663,13 +589,8 @@
     }
   });
 
-  document.addEventListener('toggle', function (e) { if (e.target.id === 'adv') opt.adv = e.target.open; }, true);
-
   document.addEventListener('DOMContentLoaded', function () {
     RZ.initFurigana();
-    // はじめはフロントを選んだ状態にしておく
-    CATS[0].topics.forEach(function (_, ti) { opt.sel[topicKey(0, ti)] = true; });
-    buildStageMap();
     home();
   });
 })();

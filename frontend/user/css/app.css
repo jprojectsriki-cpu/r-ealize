@@ -500,3 +500,36 @@ body.app-page { min-height: 100vh; padding-bottom: 76px; }
 .palette-legend .lg.is-now { border-color: var(--yellow); outline: 2px solid var(--red); outline-offset: -4px; }
 .mock-last { font-size: 13px; font-weight: 700; color: var(--yellow); line-height: 2; margin-top: -4px; }
 .mock-last rt { color: #fff; }
+.quick-head { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.quick-no { display: inline-grid; place-items: center; width: 30px; height: 30px; background: var(--red); color: #fff; font-size: 18px; border: 2px solid #fff; transform: skewX(-8deg); }
+.quick-desc { font-size: 13px; font-weight: 700; color: #ccc; line-height: 1.9; margin-bottom: 4px; }
+.quick-desc rt { color: var(--yellow); }
+.quick-cat-rate { font-size: 12px; font-weight: 900; color: #444; }
+.quick-cat-rate b { font-family: var(--font-en); font-weight: 400; font-size: 18px; color: #000; margin-left: 2px; }
+.quick-cat-rate b.is-low { color: var(--red); }
+.quick-cat-rate em { font-style: normal; display: inline-block; margin-left: 6px; background: var(--red); color: #fff; padding: 0 5px; }
+.quick-cat-rate em rt { color: var(--yellow); }
+.quick-cat-bar > span.is-low { background: #ff5a6e; }
+.quick-cats + .quick-head { margin-top: 22px; }
+
+/* ---------- ホーム：模擬試験の記録（STAGE のパネルの代わり。2026-11-21） ---------- */
+.mh-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 12px; font-weight: 900; color: #444; margin-bottom: 10px; }
+.mh-key { display: inline-block; width: 18px; height: 10px; margin-right: -8px; border: 1px solid #000; }
+.mh-key.is-g { background: var(--red); }
+.mh-key.is-j { background: #000; }
+.mh-key.is-line { width: 0; height: 14px; border: 0; border-left: 2px dashed #15803d; }
+.mh { display: grid; gap: 10px; }
+.mh-row { display: grid; grid-template-columns: 52px 1fr 60px; align-items: center; gap: 8px; }
+.mh-date { font-size: 12px; font-weight: 900; }
+.mh-bars { position: relative; display: grid; gap: 3px; }
+.mh-bar { position: relative; height: 14px; background: #eee; border: 1px solid #000; }
+.mh-bar > span { display: block; height: 100%; }
+.mh-bar > span.is-g { background: var(--red); }
+.mh-bar > span.is-j { background: #000; }
+.mh-bar em { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-style: normal; font-size: 10px; font-weight: 900; color: #000; background: rgba(255, 255, 255, .85); padding: 0 3px; line-height: 1.3; }
+.mh-line { position: absolute; top: -3px; bottom: -3px; left: 65%; border-left: 2px dashed #15803d; }
+.mh-res { text-align: center; font-size: 12px; font-weight: 900; background: #e5e5e5; color: #555; padding: 2px 0; }
+.mh-res.is-ok { background: #15803d; color: #fff; }
+.mh-res.is-ok rt { color: #fff; }
+.mh-btn { margin-top: 14px; }
+.mh-btn rt { color: var(--yellow); }
